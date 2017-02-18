@@ -19,6 +19,9 @@
 function CounterTop () {
 	var self = this;
 
+	this.handleSessionStarted = function (payload) {
+		console.log('Session Starting: ', payload.pin)
+	}
 
 	// initialize IO
 	this.socket = io();
@@ -30,6 +33,10 @@ function CounterTop () {
 	});
 
 	// Listeners for update to content
+	this.socket.on('session-started', this.handleSessionStarted);
+	this.socket.on('tool-connected', function(){
+		console.log("TOOL CONNECTED!!!");
+	})
 }
 
 window.counterTop = new CounterTop();
