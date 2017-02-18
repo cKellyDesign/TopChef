@@ -3,7 +3,6 @@
 // DECLARE COUNTERTOP VARIABLES
 
 var board, pan, stove; 
-var carrot, cucumber, pepper; 
 
 
 // PRELOAD
@@ -12,7 +11,7 @@ function preload(){
 
 	//LOAD COUNTERTOP IMAGES
 	board = loadImage('img/board.svg');
-	pan = loadImage('img/pan.svg');
+	pan = loadImage('img/pan.png');
 	stove = loadImage('img/stove.svg');
 	pepper = loadImage('img/pepper.svg');
 
@@ -23,6 +22,7 @@ function preload(){
 
 function setup() {
 	createCanvas(windowWidth, windowHeight);
+	
 }
 
 // DRAW
@@ -31,10 +31,13 @@ function draw() {
 	background('#BCC6CC');
 
 	imageMode(CENTER);
+
 	image(board, windowWidth-windowWidth/3, windowHeight-windowHeight*.3, 551,395);
 	image(pepper, windowWidth-windowWidth/3,  windowHeight-windowHeight*.9, 29,28);
+	image(stove, windowWidth/30, windowHeight/2, 700, 700);
+	image(pan, windowWidth/6.5, windowHeight/5*3.6, 270, 420);
 }
-
+	// image(pepper, windowWidth-windowWidth/3,  windowHeight-windowHeight*.9, 500,500);
 
 
 
@@ -44,7 +47,6 @@ function draw() {
 function windowResized() {
   resizeCanvas(windowWidth, windowHeight);
 }
-
 
 // p5 Code Ends Here
 
