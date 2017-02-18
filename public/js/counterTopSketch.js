@@ -12,10 +12,7 @@ function preload(){
 	//LOAD COUNTERTOP IMAGES
 
 	pan = loadImage('img/pan.png');
-
 	board = loadImage('img/board.png');
-
-
 	stove = loadImage('img/stove.png');
 	pepper = loadImage('img/pepper.png');
 
@@ -48,16 +45,16 @@ function draw() {
 	scaler();
 
 	imageMode(CENTER);
-<<<<<<< Updated upstream
 
-	image(board, windowWidth-windowWidth/3, windowHeight-windowHeight*.3, 551,395);
-	image(pepper, windowWidth-windowWidth/3,  windowHeight-windowHeight*.9, 29,28);
+
+	
+	
 	image(stove, windowWidth/30, windowHeight/2, 700, 700);
 	image(pan, windowWidth/6.5, windowHeight/5*3.6, 270, 420);
-=======
+
 	image(board, windowWidth-windowWidth/3, windowHeight-windowHeight*.3, boardWidth, boardHeight);
 	image(pepper, windowWidth-windowWidth/3,  windowHeight-windowHeight*.9, boardWidth*.125, boardHeight*.125);
->>>>>>> Stashed changes
+
 }
 	// image(pepper, windowWidth-windowWidth/3,  windowHeight-windowHeight*.9, 500,500);
 
