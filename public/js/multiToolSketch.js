@@ -1,12 +1,15 @@
-// p5 Code Starts Here
 
 
+function setup () {
+	var cc = createCanvas(windowWidth, windowHeight);
+	cc.parent('p5Container');
+	console.log('setup!');
+	frameRate(2);
+};
 
-
-
-
-
-
+function draw () {
+	// console.log('X Rotation', )
+};
 
 
 // p5 Code Ends Here
@@ -17,7 +20,7 @@
 // Main JS for detecting and sendng events, and telling p5 to do things
 function MultiTool () {
 	var self = this;
-
+	this.canvas = null;
 
 	this.preInit = function () {
 		$('#checkPin').on('click', function (e) {
@@ -30,8 +33,8 @@ function MultiTool () {
 
 	this.init = function () {
 		self.reconnectMarkup = $('#container').html();
-		$('#container').html('<h1>Connected!!</h1>');
-
+		// $('#container').html('<h1>Connected!!</h1>');
+		// window.canvas = new p5(Canvas);
 	}
 
 	this.subscribe = function () {
