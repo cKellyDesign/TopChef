@@ -2,15 +2,24 @@
 
 // GLOBAL VARIABLES
 
+var board; 
+
+
+function positions(){
+	centerX = windowWidth/2;
+  	centerY = windowHeight/2;
+}
+
 // PRELOAD
 
 function preload(){
 
 	//LOAD IMAGES
-	board = loadImage('Img/board.svg');
-	pan = loadImage('Img/pan.svg');
-	salt = loadImage('Img/salt.svg');
-	stove = loadImage('Img/stove.svg');
+	board = loadImage('img/board.svg');
+	pan = loadImage('img/pan.svg');
+	stove = loadImage('img/stove.svg');
+	pepper = loadImage('img/pepper.svg');
+
 
 	//LOAD SOUNDS
 }
@@ -24,7 +33,12 @@ function setup() {
 // DRAW
 
 function draw() {
-	background(35,11,61);
+	background('#BCC6CC');
+
+	imageMode(CENTER);
+	image(board, windowWidth/2, windowHeight-windowHeight/3, windowWidth/2, windowHeight/3);
+	// image(pan, windowWidth*.2, windowHeight/2, 500,500)
+	// image(pepper, windowWidth-windowWidth/3,  windowHeight-windowHeight*.9, 500,500);
 }
 
 
