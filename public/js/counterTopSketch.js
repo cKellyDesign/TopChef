@@ -1,5 +1,31 @@
 // p5 Code Starts Here
 
+// GLOBAL VARIABLES
+
+// PRELOAD
+
+function preload(){
+
+	//LOAD IMAGES
+	board = loadImage('Img/board.svg');
+	pan = loadImage('Img/pan.svg');
+	salt = loadImage('Img/salt.svg');
+	stove = loadImage('Img/stove.svg');
+
+	//LOAD SOUNDS
+}
+
+// SETUP
+
+function setup() {
+	createCanvas(windowWidth, windowHeight);
+}
+
+// DRAW
+
+function draw() {
+	background(35,11,61);
+}
 
 
 
