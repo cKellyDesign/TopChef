@@ -54,6 +54,10 @@ function MultiTool () {
 			self.init();
 		}
 	});
+	
+	this.socket.on('counter-disconnected', function () {
+		location.reload();
+	});
 
 }
 

@@ -1,3 +1,28 @@
 html, body, .container {
   background: #E3E3E3;
 }
+
+
+
+
+
+/* MultiTool */
+body.multiTool #container {
+	padding-top: 72px;
+	text-align: center;
+}
+
+body.multiTool h1 {
+	font-weight: bold;
+}
+
+body.multiTool input {
+	text-align: center;
+	padding: 12px;
+	font-size: 36px;
+	height: 72px;
+}
+
+body.multiTool input.submit {
+	font-size: 30px;
+}
