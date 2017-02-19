@@ -11,7 +11,8 @@ var toolState = {
 	'knifeR': false,
 	'spoon' : false,
 	'shaker': false,
-	'state'	: 'blank'
+	'state'	: 'blank',
+	'pState': 'blank'
 };
 var stateThreshold = 0;
 
@@ -21,19 +22,19 @@ function MultiTool () {
 	this.canvas = null;
 
 	this.preInit = function () {
-		// $('#checkPin').on('click', function (e) {
-		// 	e.preventDefault();
-		// 	var pin = $('#prinfield').val();
-		// 	self.socket.emit('check-pin', { pin : Number(pin) });
-		// });
-		$('#container').html('<h1 id="stateEl">Ready!!</h1>'); // todo: remove this line and un-comment above
+		$('#checkPin').on('click', function (e) {
+			e.preventDefault();
+			var pin = $('#prinfield').val();
+			self.socket.emit('check-pin', { pin : Number(pin) });
+		});
+		// $('#container').append('<h1 id="stateEl">Ready!!</h1>'); // for rendering state stats
 		self.subscribe();
 	};
 
 	this.init = function () {
 		self.reconnectMarkup = $('#container').html();
 		toolIsReady = true;
-		// $('#container').html('<h1 id="stateEl">Ready!!</h1>');
+
 	}
 
 	this.subscribe = function () {
@@ -133,16 +134,18 @@ function MultiTool () {
 	this.setState = function (newState) {
 		toolState[toolState.state] = false;
 		toolState[newState] = true;
+		toolState.pState = toolState.state;
 		toolState.state = newState;
 
-		self.renderState(newState);
+		$('body').removeClass(toolState.pState).addClass(toolState.state);
+		// self.renderState(newState);
 	}
 
 	this.determineState = function (orr) {
 		// var newState = toolState.state;
 		var newState = '';
 		var prevState = toolState.state;
-		var knifeYthreshold = 70;
+		var knifeYthreshold = 65;
 		var XisFlat = (orr.xR < 10 && orr.xR > -10); // away / towards
 		var YisFlat = (orr.yR >= -knifeYthreshold && orr.yR <= knifeYthreshold); // left / right
 
@@ -150,6 +153,10 @@ function MultiTool () {
 		// Determine newState by Orrientation
 		if ( orr.xR < -75 && orr.xR > -105 ) {
 			newState = 'shaker';
+
+
+		} else if ( orr.xR >= -65 && orr.xR < -35 ) {
+			newState = 'spoon';
 
 		} else if ( XisFlat && orr.yR < -knifeYthreshold ) {
 			newState = 'knifeR';
@@ -168,7 +175,7 @@ function MultiTool () {
 			if (newState !== prevState) {
 				
 				stateThreshold++;
-				if (stateThreshold > 2) { 
+				if (stateThreshold > 9) { 
 					self.setState(newState); // if a new state is seen 3x then change state
 				}
 
@@ -176,15 +183,29 @@ function MultiTool () {
 				stateThreshold = 0;
 			}
 			
-		} else {
-			self.renderState(toolState.state);
+		// } else {
+		// 	self.renderState(toolState.state);
 		}
 	}
 
 	this.renderState = function (str) {
-		// $('#stateEl').html(str + ' (xR : ' + ~~xR + ')');
+
 		$('#stateEl').html(str);
 
+		self.renderStats();
+	}
+
+	this.renderStats = function () {
+
+		$('#accStats').remove();
+		var accStatsStr = '<p id="accStats"><b>Acceleration</b><br><br>X : ' + x + '<br>' +
+							'Y : ' + y + '<br>Z : ' + z + '</p>';
+		$('#stateEl').after(accStatsStr);
+
+		$('#orrStats').remove();
+		var orrStatsStr = '<p id="orrStats"><b>Orrientation</b><br><br>X : ' + xR + '<br>' +
+							'Y : ' + yR + '<br>Z : ' + zR + '</p>';
+		$('#stateEl').after(orrStatsStr);
 	}
 
 	// initialize IO

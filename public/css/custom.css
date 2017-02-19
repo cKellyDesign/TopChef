@@ -1,4 +1,4 @@
-html, body, .container {
+body {
   background: #E3E3E3;
 }
 
@@ -25,4 +25,26 @@ body.multiTool input {
 
 body.multiTool input.submit {
 	font-size: 30px;
+}
+
+
+/* Temp Styling to demo states! 
+
+todo: use selectors below to set bg image to correct tool img
+
+*/
+body.multiTool.blank {
+	background-color: white;
+}
+body.multiTool.knifeL {
+	background-color: red;
+}
+body.multiTool.knifeR {
+	background-color: orange;
+}
+body.multiTool.spoon {
+	background-color: blue;
+}
+body.multiTool.shaker {
+	background-color: green;
 }
