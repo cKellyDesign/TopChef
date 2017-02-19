@@ -107,4 +107,15 @@ io.sockets.on('connection', function (socket) {
 			newTool.counterTopSocket.emit('tool-connected');
 	});
 
+	socket.on('cooking-action', function (payload) {
+		var tool = _.findWhere(multiTools, { id : this.id });
+		tool.counterTopSocket.emit('cooking-action', payload);
+	});
+
 });
+
+
+
+
+
+

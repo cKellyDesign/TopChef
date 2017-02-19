@@ -10,7 +10,7 @@ var accThreshold = 1.25;
 var xR, yR, zR;
 var rotThreshold = 5;
 
-var toolIsReady = true;
+var toolIsReady = false;
 var toolState = {
 	'blank' : true,
 	'knifeL': false,
@@ -42,25 +42,24 @@ function MultiTool () {
 			self.socket.emit('check-pin', { pin : Number(pin) });
 		});
 		// $('#container').append('<h1 id="stateEl">Ready!!</h1>'); // for rendering state stats
-		self.subscribe();
+
+		// Subscribe to Motion Events
+		$(window).on('deviceorientation', self.onDeviceRotation);
+		// $(window).on('devicemotion', self.onDeviceMotion);
 	};
 
 	this.init = function () {
 		self.reconnectMarkup = $('#container').html();
+		$('#container').empty();
 		toolIsReady = true;
-
-	}
-
-	this.subscribe = function () {
-		// $(window).on('devicemotion', self.onDeviceMotion);
-		$(window).on('deviceorientation', self.onDeviceRotation);
-
-		// if ( $.shake ) $.shake({  callback : self.onShake });
 	}
 
 	this.onShake = function () {
+		if (!toolIsReady) return;
+		// $('#container').prepend('<p class="shake">' + actionLegend[toolState.state] + '</p>');
+
 		navigator.vibrate(250);
-		$('#container').prepend('<p class="shake">' + actionLegend[toolState.state] + '</p>');
+		if (!toolState.blank) self.socket.emit('cooking-action', { type : toolState.state, action : actionLegend[toolState.state] });
 	}
 
 	this.onDeviceMotion = function (e) {
@@ -150,7 +149,6 @@ function MultiTool () {
 		}
 	}
 
-
 	this.setState = function (newState) {
 		toolState[toolState.state] = false;
 		toolState[newState] = true;
@@ -231,7 +229,7 @@ function MultiTool () {
 
 	// initialize IO
 	this.socket = io();
-
+	this.pin = 0;
 	// When connected, send content to server for Dorthy
 	this.socket.on('connect', this.preInit);
 	this.socket.once('pin-checked', function (payload) {
@@ -243,6 +241,7 @@ function MultiTool () {
 			console.log('Matching pin - ', payload.pin);
 			self.socket.emit('multi-tool-init', { pin : payload.pin });
 			self.init();
+			self.pin = payload.pin;
 		}
 	});
 	
