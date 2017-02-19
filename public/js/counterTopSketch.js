@@ -16,7 +16,17 @@ function Stove() {
 
 function Pan() {
 	panHeight = stoveHeight * .65;
-	panWidth = stoveWidth * .65; 
+	panWidth = stoveWidth * .65;
+	panX = stoveWidth * .52;
+	panY = stoveHeight * .37;
+}
+
+function Chicken() {
+	chickenHeight = panHeight * .5;
+	chickenWidth = panWidth * .5;
+	chickenX = panX;
+	chickenY = panY * .7;
+
 }
 
 
@@ -67,14 +77,16 @@ function draw() {
 	Board();
 	Stove();
 	Pan();
+	Chicken();
 
 	
 
 	//DRAW GAME BACKGROUND
 	imageMode(CENTER);
-	image(stove, stoveWidth * .5,  stoveHeight * .48, stoveWidth, stoveHeight);
-	image(pan, stoveWidth * .52, stoveHeight * .37, panWidth, panHeight);
+	image(stove, stoveWidth * .5,  stoveHeight * .45, stoveWidth, stoveHeight);
+	image(pan, panX, panY, panWidth, panHeight);
 	image(board, windowWidth-boardWidth*.5, windowHeight-boardHeight*.55, boardWidth, boardHeight);
+	image(chicken, chickenX, chickenY, chickenWidth,chickenHeight);
 	
 
 }
