@@ -13,6 +13,7 @@ var toolState = {
 	'shaker': false,
 	'state'	: 'blank'
 };
+var stateThreshold = 0;
 
 // Main JS for detecting and sendng events, and telling p5 to do things
 function MultiTool () {
@@ -140,34 +141,50 @@ function MultiTool () {
 	this.determineState = function (orr) {
 		// var newState = toolState.state;
 		var newState = '';
+		var prevState = toolState.state;
 		var knifeYthreshold = 70;
 		var XisFlat = (orr.xR < 10 && orr.xR > -10); // away / towards
 		var YisFlat = (orr.yR >= -knifeYthreshold && orr.yR <= knifeYthreshold); // left / right
 
 
-		
-		if ( !toolState.shaker && orr.xR < -75 && orr.xR > -105 ) {
+		// Determine newState by Orrientation
+		if ( orr.xR < -75 && orr.xR > -105 ) {
 			newState = 'shaker';
 
-		} else if ( !toolState.knifeR && XisFlat && orr.yR < -knifeYthreshold ) {
+		} else if ( XisFlat && orr.yR < -knifeYthreshold ) {
 			newState = 'knifeR';
 
-		} else if ( !toolState.knifeL && XisFlat && orr.yR > knifeYthreshold ) {
+		} else if ( XisFlat && orr.yR > knifeYthreshold ) {
 			newState = 'knifeL';
 			
-		} else if ( !toolState.blank && XisFlat && YisFlat ) {
+		} else if ( XisFlat && YisFlat ) {
 			newState = 'blank';
 		} 
 
+
+		// Determine stability of newState
 		if (!!newState) {
-			self.setState(newState);
+
+			if (newState !== prevState) {
+				
+				stateThreshold++;
+				if (stateThreshold > 2) { 
+					self.setState(newState); // if a new state is seen 3x then change state
+				}
+
+			} else {
+				stateThreshold = 0;
+			}
+			
 		} else {
 			self.renderState(toolState.state);
 		}
 	}
 
 	this.renderState = function (str) {
-		$('#stateEl').html(str + ' (xR : ' + ~~xR + ')');
+		// $('#stateEl').html(str + ' (xR : ' + ~~xR + ')');
+		$('#stateEl').html(str);
+
 	}
 
 	// initialize IO
