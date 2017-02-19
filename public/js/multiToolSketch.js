@@ -1,3 +1,9 @@
+$(document).ready(function(){
+	window.multiTool = new MultiTool();
+	$.shake({  callback : window.multiTool.onShake });
+});
+
+
 var x, y, z;
 var accThreshold = 1.25;
 
@@ -15,6 +21,14 @@ var toolState = {
 	'pState': 'blank'
 };
 var stateThreshold = 0;
+
+var actionLegend = {
+	'blank' : '**',
+	'knifeL': 'Slice!!',
+	'knifeR': 'Dice!!',
+	'spoon' : 'Stir!!!',
+	'shaker': 'Sprinkle!!',
+};
 
 // Main JS for detecting and sendng events, and telling p5 to do things
 function MultiTool () {
@@ -38,10 +52,16 @@ function MultiTool () {
 	}
 
 	this.subscribe = function () {
-		$(window).on('devicemotion', self.onDeviceMotion);
+		// $(window).on('devicemotion', self.onDeviceMotion);
 		$(window).on('deviceorientation', self.onDeviceRotation);
+
+		// if ( $.shake ) $.shake({  callback : self.onShake });
 	}
 
+	this.onShake = function () {
+		navigator.vibrate(250);
+		$('#container').prepend('<p class="shake">' + actionLegend[toolState.state] + '</p>');
+	}
 
 	this.onDeviceMotion = function (e) {
 		if (!toolIsReady) return;
@@ -93,7 +113,7 @@ function MultiTool () {
 			zR : e.originalEvent.alpha // 0 - 360 degrees
 		};
 
-		self.handleRotation(orr);
+		// self.handleRotation(orr);
 		self.determineState(orr);
 
 		xR = orr.xR;
@@ -137,8 +157,9 @@ function MultiTool () {
 		toolState.pState = toolState.state;
 		toolState.state = newState;
 
+		// $('.shake').remove();
 		$('body').removeClass(toolState.pState).addClass(toolState.state);
-		if (!!navigator.vibrate) navigator.vibrate(75);
+		// if (!!navigator.vibrate) navigator.vibrate(75);
 		// self.renderState(newState);
 	}
 
@@ -155,8 +176,7 @@ function MultiTool () {
 		if ( orr.xR < -75 && orr.xR > -105 ) {
 			newState = 'shaker';
 
-
-		} else if ( orr.xR >= -65 && orr.xR < -35 ) {
+		} else if ( orr.xR >= -65 && orr.xR < -35 && !(orr.yR < -knifeYthreshold || orr.yR > knifeYthreshold) ) {
 			newState = 'spoon';
 
 		} else if ( XisFlat && orr.yR < -knifeYthreshold ) {
@@ -232,4 +252,4 @@ function MultiTool () {
 
 }
 
-window.multiTool = new MultiTool();
+
