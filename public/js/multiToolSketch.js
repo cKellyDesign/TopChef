@@ -1,6 +1,9 @@
 var x, y, z;
 var accThreshold = 1.25;
 
+var xR, yR, zR;
+var rotThreshold = 5;
+
 
 // Main JS for detecting and sendng events, and telling p5 to do things
 function MultiTool () {
@@ -23,6 +26,7 @@ function MultiTool () {
 
 	this.subscribe = function () {
 		$(window).on('devicemotion', self.onDeviceMotion);
+		$(window).on('deviceorientation', self.onDeviceRotation);
 	}
 
 	this.onDeviceMotion = function (e) {
@@ -62,6 +66,49 @@ function MultiTool () {
 				// console.log('Up Acceleration');
 			} else {
 				// console.log('Down Acceleration');
+			}
+		}
+	}
+
+	this.onDeviceRotation = function (e) {
+		var orr = { 
+			xR : e.originalEvent.beta, // -180 - 180 degrees
+			yR : e.originalEvent.gamma, // -90 - 90 degrees
+			zR : e.originalEvent.alpha // 0 - 360 degrees
+		};
+
+		this.handleRotation(orr);
+
+		xR = orr.xR;
+		yR = orr.yR;
+		zR = orr.zR;
+	}
+
+	this.handleRotation = function (orr) {
+		// Handle Titling Up and Down
+		if ( xR < (orr.xR - rotThreshold) || xR > (orr.xR + rotThreshold) ) {
+			if (orr.xR < -5) {
+				// console.log('Tilting Away');
+			} else if (orr.xR > 5) {
+				// console.log('Tilting Toward');
+			}
+		}
+
+		// Handle Tilting Left and Right
+		if ( yR < (orr.yR - rotThreshold) || yR > (orr.yR + rotThreshold) ) {
+			if ( orr.yR < -5 ) {
+				// console.log('Tilting LEFT');
+			} else if ( orr.yR > 5 ){
+				// console.log('Tilting Right');
+			}
+		}
+
+		// Handle Rotating Clockwise and Counter-Clockwise
+		if ( orr.zR < (zR - 15) || orr.zR > (zR + 15) ) {
+			if ( orr.zR < zR  ) {
+				// console.log('Rotating Clockwise');
+			} else {
+				// console.log('Rotating Counter-Clockwise');
 			}
 		}
 	}
