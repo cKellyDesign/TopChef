@@ -12,8 +12,6 @@ function Stove() {
 	stoveHeight = stoveWidth * 1.56; 	
 }
 
-
-
 function Pan() {
 	panHeight = stoveHeight * .65;
 	panWidth = stoveWidth * .65;
@@ -22,17 +20,38 @@ function Pan() {
 }
 
 function Chicken() {
-	chickenHeight = panHeight * .5;
+	chickenHeight = panHeight * .45;
 	chickenWidth = panWidth * .5;
 	chickenX = panX;
 	chickenY = panY * .7;
 
 }
 
-
 // DECLARE FOOD 
 
-var pepper, broccoli, carrot, cucumber, lettuce, mushroom, onion, potato, tomato; 
+function Pepper() {
+	pepperWidth = boardWidth * .125;
+	pepperHeight = pepperWidth * 1.21;
+	pepperX = windowWidth-boardWidth*.5;
+	pepperY = windowHeight * .2;
+}
+
+function Broccoli() {
+	broccoliWidth = boardWidth * .25;
+	broccoliHeight = broccoliWidth * 1.09;
+	broccoliX = windowWidth-boardWidth*.75;
+	broccoliY = windowHeight * .2;
+}
+
+function Carrot() {
+	carrotWidth = boardWidth * .25;
+	carrotHeight = carrotWidth * .65;
+	carrotX = windowWidth-boardWidth*.6;
+	carrotY = windowHeight * .3;
+}
+
+var cucumber, lettuce, mushroom, onion, potato, tomato; 
+
 
 
 // PRELOAD
@@ -78,6 +97,9 @@ function draw() {
 	Stove();
 	Pan();
 	Chicken();
+	Pepper();
+	Broccoli();
+	Carrot();
 
 	
 
@@ -87,6 +109,9 @@ function draw() {
 	image(pan, panX, panY, panWidth, panHeight);
 	image(board, windowWidth-boardWidth*.5, windowHeight-boardHeight*.55, boardWidth, boardHeight);
 	image(chicken, chickenX, chickenY, chickenWidth,chickenHeight);
+	image(pepper, pepperX, pepperY, pepperWidth, pepperHeight);
+	image(broccoli, broccoliX, broccoliY, broccoliWidth, broccoliHeight);
+	image(carrot, carrotX, carrotY, carrotWidth, carrotHeight);
 	
 
 }
