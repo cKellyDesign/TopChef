@@ -8,14 +8,17 @@ function Board() {
 }
 
 function Stove() {
-	stoveHeight = windowHeight;
-	stoveWidth = stoveHeight * .65; 	
+	stoveWidth = windowWidth * .4;
+	stoveHeight = stoveWidth * 1.56; 	
 }
 
+
+
 function Pan() {
-	panHeight = stoveHeight * .5;
-	panWidth = stoveWidth * .5; 
+	panHeight = stoveHeight * .65;
+	panWidth = stoveWidth * .65; 
 }
+
 
 // DECLARE FOOD 
 
@@ -65,10 +68,11 @@ function draw() {
 	Stove();
 	Pan();
 
-	imageMode(CENTER);
+	
 
 	//DRAW GAME BACKGROUND
-	image(stove, stoveWidth * .5,  stoveHeight * .5, stoveWidth, stoveHeight);
+	imageMode(CENTER);
+	image(stove, stoveWidth * .5,  stoveHeight * .48, stoveWidth, stoveHeight);
 	image(pan, stoveWidth * .52, stoveHeight * .37, panWidth, panHeight);
 	image(board, windowWidth-boardWidth*.5, windowHeight-boardHeight*.55, boardWidth, boardHeight);
 	
