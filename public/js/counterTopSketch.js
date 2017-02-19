@@ -60,7 +60,7 @@ var dragCarrot = false;
 var dragYellowPepper = false;
 var dragCucumber = false;
 var dragMushroom = false;
-var dragOnion = false;
+var dragOnion = false;*/
 
 // PRELOAD
 
@@ -81,8 +81,6 @@ function preload(){
 	cucumber = loadImage('img/cucumber.png');
 	mushroom = loadImage('img/mushroom.png');
 	onion = loadImage('img/onion.png');
-	//potato = loadImage('img/potato.png');
-	//tomato = loadImage('img/tomato.png');
 
 	//LOAD SOUNDS
 
@@ -129,8 +127,15 @@ function setup() {
 // DRAW
 
 function draw() {
-	
-
+	clear();
+	imageMode(CENTER);
+	image(stove, stoveWidth * .5,  stoveHeight * .45, stoveWidth, stoveHeight);
+	image(pan, panX, panY, panWidth, panHeight);
+	image(board, windowWidth-boardWidth*.5, windowHeight-boardHeight*.55, boardWidth, boardHeight);
+	image(chicken, chickenX, chickenY, chickenWidth,chickenHeight);
+	image(redPepper, pepperX, pepperY, pepperWidth, pepperHeight);
+	image(broccoli, broccoliX, broccoliY, broccoliWidth, broccoliHeight);
+	image(carrot, carrotX, carrotY, carrotWidth, carrotHeight);
 }
 
 
@@ -180,7 +185,7 @@ function mouseDragged(){
 		broccoliX = mouseX;
 		broccoliY = mouseY;
 	}
-	if(dragredPepper = true){
+	if(dragredPepper == true){
 		pepperX = mouseX;
 		pepperY = mouseY;
 	}
@@ -217,9 +222,7 @@ function mouseReleased(){
 	dragYellowPepper = false;
 	dragCucumber = false;
 	dragMushroom = false;
-	dragOnion = false;
-	dragPotato = false;
-	dragTomato = false;*/
+	dragOnion = false;*/
 }
 
 
