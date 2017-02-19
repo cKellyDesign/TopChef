@@ -138,6 +138,7 @@ function MultiTool () {
 		toolState.state = newState;
 
 		$('body').removeClass(toolState.pState).addClass(toolState.state);
+		if (!!navigator.vibrate) navigator.vibrate(75);
 		// self.renderState(newState);
 	}
 
