@@ -65,11 +65,12 @@ function preload(){
 	chicken = loadImage('img/chicken.png');
 
 	//LOAD FOOD 
-	pepper = loadImage('img/pepper.png');
+	redPepper = loadImage('img/pepper-r.png');
+	orangePepper = loadImage('img/pepper-o.png');
+	yellowPepper = loadImage('img/pepper-y.png');
 	broccoli = loadImage('img/broccoli.png');
 	carrot = loadImage('img/carrot.png');
 	cucumber = loadImage('img/cucumber.png');
-	lettuce = loadImage('img/lettuce.png');
 	mushroom = loadImage('img/mushroom.png');
 	onion = loadImage('img/onion.png');
 	potato = loadImage('img/potato.png');
@@ -117,7 +118,7 @@ function draw() {
 	image(pan, panX, panY, panWidth, panHeight);
 	image(board, windowWidth-boardWidth*.5, windowHeight-boardHeight*.55, boardWidth, boardHeight);
 	image(chicken, chickenX, chickenY, chickenWidth,chickenHeight);
-	image(pepper, pepperX, pepperY, pepperWidth, pepperHeight);
+	image(redPepper, pepperX, pepperY, pepperWidth, pepperHeight);
 	image(broccoli, broccoliX, broccoliY, broccoliWidth, broccoliHeight);
 	image(carrot, carrotX, carrotY, carrotWidth, carrotHeight);
 	
