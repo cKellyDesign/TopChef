@@ -4,6 +4,15 @@ var accThreshold = 1.25;
 var xR, yR, zR;
 var rotThreshold = 5;
 
+var toolIsReady = true;
+var toolState = {
+	'blank' : true,
+	'knifeL': false,
+	'knifeR': false,
+	'spoon' : false,
+	'shaker': false,
+	'state'	: 'blank'
+};
 
 // Main JS for detecting and sendng events, and telling p5 to do things
 function MultiTool () {
@@ -11,17 +20,19 @@ function MultiTool () {
 	this.canvas = null;
 
 	this.preInit = function () {
-		$('#checkPin').on('click', function (e) {
-			e.preventDefault();
-			var pin = $('#prinfield').val();
-			self.socket.emit('check-pin', { pin : Number(pin) });
-		});
+		// $('#checkPin').on('click', function (e) {
+		// 	e.preventDefault();
+		// 	var pin = $('#prinfield').val();
+		// 	self.socket.emit('check-pin', { pin : Number(pin) });
+		// });
+		$('#container').html('<h1 id="stateEl">Ready!!</h1>'); // todo: remove this line and un-comment above
 		self.subscribe();
 	};
 
 	this.init = function () {
 		self.reconnectMarkup = $('#container').html();
-		// $('#container').html('<h1>Connected!!</h1>');
+		toolIsReady = true;
+		// $('#container').html('<h1 id="stateEl">Ready!!</h1>');
 	}
 
 	this.subscribe = function () {
@@ -29,7 +40,9 @@ function MultiTool () {
 		$(window).on('deviceorientation', self.onDeviceRotation);
 	}
 
+
 	this.onDeviceMotion = function (e) {
+		if (!toolIsReady) return;
 		var acc = e.originalEvent.accelerationIncludingGravity;
 
 		self.handleAcceleration(acc);
@@ -71,13 +84,15 @@ function MultiTool () {
 	}
 
 	this.onDeviceRotation = function (e) {
+		if (!toolIsReady) return;
 		var orr = { 
 			xR : e.originalEvent.beta, // -180 - 180 degrees
 			yR : e.originalEvent.gamma, // -90 - 90 degrees
 			zR : e.originalEvent.alpha // 0 - 360 degrees
 		};
 
-		this.handleRotation(orr);
+		self.handleRotation(orr);
+		self.determineState(orr);
 
 		xR = orr.xR;
 		yR = orr.yR;
@@ -111,6 +126,48 @@ function MultiTool () {
 				// console.log('Rotating Counter-Clockwise');
 			}
 		}
+	}
+
+
+	this.setState = function (newState) {
+		toolState[toolState.state] = false;
+		toolState[newState] = true;
+		toolState.state = newState;
+
+		self.renderState(newState);
+	}
+
+	this.determineState = function (orr) {
+		// var newState = toolState.state;
+		var newState = '';
+		var knifeYthreshold = 70;
+		var XisFlat = (orr.xR < 10 && orr.xR > -10); // away / towards
+		var YisFlat = (orr.yR >= -knifeYthreshold && orr.yR <= knifeYthreshold); // left / right
+
+
+		
+		if ( !toolState.shaker && orr.xR < -75 && orr.xR > -105 ) {
+			newState = 'shaker';
+
+		} else if ( !toolState.knifeR && XisFlat && orr.yR < -knifeYthreshold ) {
+			newState = 'knifeR';
+
+		} else if ( !toolState.knifeL && XisFlat && orr.yR > knifeYthreshold ) {
+			newState = 'knifeL';
+			
+		} else if ( !toolState.blank && XisFlat && YisFlat ) {
+			newState = 'blank';
+		} 
+
+		if (!!newState) {
+			self.setState(newState);
+		} else {
+			self.renderState(toolState.state);
+		}
+	}
+
+	this.renderState = function (str) {
+		$('#stateEl').html(str + ' (xR : ' + ~~xR + ')');
 	}
 
 	// initialize IO
