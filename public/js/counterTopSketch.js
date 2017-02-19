@@ -76,6 +76,12 @@ function preload(){
 	tomato = loadImage('img/tomato.png');
 
 	//LOAD SOUNDS
+
+	cutting = loadSound('sounds/cutting.mp3');
+	scrape = loadSound('sounds/scrape.mp3');
+	sizzlingLoud = loadSound('sounds/sizzling-loud.mp3');
+	sizzlingSoft = loadSound('sounds/sizzling-soft.mp3');
+	noise = loadSound('sounds/kitchen-background.mp3');
 }
 
 
@@ -83,6 +89,8 @@ function preload(){
 
 function setup() {
 	createCanvas(windowWidth, windowHeight);
+
+	// noise.loop();
 	
 }
 
