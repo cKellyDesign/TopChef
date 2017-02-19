@@ -29,7 +29,7 @@ function Chicken() {
 
 // DECLARE FOOD 
 
-function Pepper() {
+function Pepper(x, y) {
 	pepperWidth = boardWidth * .125;
 	pepperHeight = pepperWidth * 1.21;
 	pepperX = windowWidth-boardWidth*.5;
@@ -52,7 +52,15 @@ function Carrot() {
 
 var cucumber, lettuce, mushroom, onion, potato, tomato; 
 
-
+//Flags that determine if mouse is in the radius of a certain food when pressed
+var dragredPepper = false;
+var dragBroccoli = false;
+var dragCarrot = false;
+/*var dragOrangePepper = false;
+var dragYellowPepper = false;
+var dragCucumber = false;
+var dragMushroom = false;
+var dragOnion = false;
 
 // PRELOAD
 
@@ -73,8 +81,8 @@ function preload(){
 	cucumber = loadImage('img/cucumber.png');
 	mushroom = loadImage('img/mushroom.png');
 	onion = loadImage('img/onion.png');
-	potato = loadImage('img/potato.png');
-	tomato = loadImage('img/tomato.png');
+	//potato = loadImage('img/potato.png');
+	//tomato = loadImage('img/tomato.png');
 
 	//LOAD SOUNDS
 
@@ -91,15 +99,6 @@ function preload(){
 function setup() {
 	createCanvas(windowWidth, windowHeight);
 
-	// noise.loop();
-	
-}
-
-
-
-// DRAW
-
-function draw() {
 	background('#BCC6CC');
 
 	Board();
@@ -110,7 +109,6 @@ function draw() {
 	Broccoli();
 	Carrot();
 
-	
 
 	//DRAW GAME BACKGROUND
 	imageMode(CENTER);
@@ -122,6 +120,16 @@ function draw() {
 	image(broccoli, broccoliX, broccoliY, broccoliWidth, broccoliHeight);
 	image(carrot, carrotX, carrotY, carrotWidth, carrotHeight);
 	
+	// noise.loop();
+	
+}
+
+
+
+// DRAW
+
+function draw() {
+	
 
 }
 
@@ -130,6 +138,90 @@ function draw() {
 function windowResized() {
   resizeCanvas(windowWidth, windowHeight);
 }
+
+
+//MOUSE PRESS FOR DRAGGING. IF MOUSE IS WITHIN THE CIRCLE WITH A RADIUS OF 0.5 WIDTH OF THE FOOD, THE FLAG WILL BE TRUE 
+function mousePressed(){
+	if (dist(mouseX, mouseY, pepperX, pepperY) < pepperWidth * .5){
+		dragredPepper = true; 
+	}
+	if (dist(mouseX, mouseY, broccoliX, broccoliY) < broccoliWidth * .5){
+		dragBroccoli = true;
+	}
+	if (dist(mouseX, mouseY, carrotX, carrotY) < carrotWidth * .5){
+		dragCarrot = true;
+	}
+	/*if (dist(mouseX, mouseY, yellowPepperX, yellowPepperY) < yellowPepperWidth * .5){
+		dragYellowPepper = true;
+	}
+	if (dist(mouseX, mouseY, orangePepperX, orangePepperY) < orangePepperWidth * .5){
+		dragOrangePepper = true;
+	}
+	if (dist(mouseX, mouseY, mushroomX, mushroomY) < mushroomWidth * .5){
+		dragMushroom = true; 
+	}
+	if (dist(mouseX, mouseY, cucumberX, cucumberY) < cucumberWidth * .5){
+		dragCucumber = true;
+	}
+	if (dist(mouseX, mouseY, onionX, onionY) < onionWidth * .5){
+		dragOnion = true;
+	}*/
+
+}
+
+
+//DRAGGING FOOD EVENT 
+function mouseDragged(){
+	if(dragCarrot == true){
+		carrotX = mouseX;
+		carrotY = mouseY;
+	}
+	if(dragBroccoli == true){
+		broccoliX = mouseX;
+		broccoliY = mouseY;
+	}
+	if(dragredPepper = true){
+		pepperX = mouseX;
+		pepperY = mouseY;
+	}
+	/*if (dragOnion == true){
+		onionX = mouseX;
+		onionY = mouseY;
+	}
+	if(dragMushroom == true){
+		mushroomX = mouseX;
+		mushroomY = mouseY;
+	}
+	if(dragCucumber == true){
+		cucumberX = mouseX;
+		cucumberY = mouseY;
+	}
+	if(dragYellowPepper == true){
+		yellowPepperX = mouseX;
+		yellowPepperY = mouseY;
+	}
+	if(dragOrangePepper == true){
+		orangePepperX = mouseX;
+		orangePepperY = mouseY;
+	}*/
+
+}
+
+
+//DROPPING FOOD WHEN MOUSE IS RELEASED. FLAG SWITCH TO FALSE.
+function mouseReleased(){
+	dragredPepper = false;
+	dragBroccoli = false;
+	dragCarrot = false;
+	/*dragOrangePepper = false;
+	dragYellowPepper = false;
+	dragCucumber = false;
+	dragMushroom = false;
+	dragOnion = false;
+	dragPotato = false;
+	dragTomato = false;*/
+}
+
 
 // p5 Code Ends Here
 
