@@ -67,28 +67,28 @@ var dragOnion = false;*/
 function preload(){
 
 	//LOAD COUNTERTOP IMAGES
-	pan = loadImage('img/pan.png');
-	board = loadImage('img/board.png');
-	stove = loadImage('img/stove.png');
-	chicken = loadImage('img/chicken.png');
+	pan = loadImage('/img/pan.png');
+	board = loadImage('/img/board.png');
+	stove = loadImage('/img/stove.png');
+	chicken = loadImage('/img/chicken.png');
 
 	//LOAD FOOD 
-	redPepper = loadImage('img/pepper-r.png');
-	orangePepper = loadImage('img/pepper-o.png');
-	yellowPepper = loadImage('img/pepper-y.png');
-	broccoli = loadImage('img/broccoli.png');
-	carrot = loadImage('img/carrot.png');
-	cucumber = loadImage('img/cucumber.png');
-	mushroom = loadImage('img/mushroom.png');
-	onion = loadImage('img/onion.png');
+	redPepper = loadImage('/img/pepper-r.png');
+	orangePepper = loadImage('/img/pepper-o.png');
+	yellowPepper = loadImage('/img/pepper-y.png');
+	broccoli = loadImage('/img/broccoli.png');
+	carrot = loadImage('/img/carrot.png');
+	cucumber = loadImage('/img/cucumber.png');
+	mushroom = loadImage('/img/mushroom.png');
+	onion = loadImage('/img/onion.png');
 
 	//LOAD SOUNDS
 
-	cutting = loadSound('sounds/cutting.mp3');
-	scrape = loadSound('sounds/scrape.mp3');
-	sizzlingLoud = loadSound('sounds/sizzling-loud.mp3');
-	sizzlingSoft = loadSound('sounds/sizzling-soft.mp3');
-	noise = loadSound('sounds/kitchen-background.mp3');
+	cutting = loadSound('/sounds/cutting.mp3');
+	scrape = loadSound('/sounds/scrape.mp3');
+	sizzlingLoud = loadSound('/sounds/sizzling-loud.mp3');
+	sizzlingSoft = loadSound('/sounds/sizzling-soft.mp3');
+	noise = loadSound('/sounds/kitchen-background.mp3');
 }
 
 
