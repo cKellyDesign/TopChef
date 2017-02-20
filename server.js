@@ -13,7 +13,7 @@ app.get('/', function (req, res) {
 // 	res.sendFile(path.resolve(__dirname, 'public', 'multiTool.html'));
 // });
 
-app.use('/images', express.static(path.join(__dirname, '/public/img')));
+app.use('/images', express.static(path.join(__dirname, '/public/images')));
 app.use('/sounds', express.static(path.join(__dirname, '/public/sounds')));
 app.use('/css', express.static(path.join(__dirname, '/public/css')));
 app.use('/js', express.static(path.join(__dirname, '/public/js')));
