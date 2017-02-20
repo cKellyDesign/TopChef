@@ -10,6 +10,7 @@ body {
 body.multiTool #container {
 	padding-top: 72px;
 	text-align: center;
+	height: 100vh;
 }
 
 body.multiTool h1 {
@@ -35,39 +36,44 @@ body.multiTool input.submit {
 todo: use selectors below to set bg image to correct tool img
 
 */
-body.multiTool {
+body.multiTool #container {
 	background-repeat: no-repeat;
 	transition: background-position .15s;
 	transition-timing-function: ease-in;
 }
-body.multiTool.action {
+body.multiTool.action #container {
 	transition-timing-function: ease-out;
 }
 
-body.multiTool.knifeL {
+body.multiTool.knifeL #container {
 	background-position: top right;
 	background-image: url("/img/Tools/knife-side3.png");
 	background-size: 55%;
 }
-body.multiTool.knifeR {
+body.multiTool.knifeR #container {
 	background-position: top left;
 	background-image: url("/img/Tools/knife-side2.png");
 	background-size: 55%;
 }
-body.multiTool.knifeL.action {
+body.multiTool.knifeL.action #container {
 	background-position: top left;
 }
-body.multiTool.knifeR.action {
+body.multiTool.knifeR.action #container {
 	background-position: top right;
 }
 
-body.multiTool.spoon {
-	background-color: blue;
+body.multiTool.spoon #container {
+	background-image: url("/img/Tools/spoon2.png");
+	background-position: top center;
+	transition: none;
+	background-size: 60%;
 }
-body.multiTool.shaker {
-	background-color: green;
+body.multiTool.shaker #container {
+	background-image: url("/img/Tools/salt2.png");
+	background-size: cover;
+	transition: none;
 }
 
-body.multiTool.blank {
+body.multiTool.blank #container {
 	background: white;
 }

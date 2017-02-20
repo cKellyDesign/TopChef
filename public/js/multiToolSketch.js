@@ -10,7 +10,7 @@ var accThreshold = 1.25;
 var xR, yR, zR;
 var rotThreshold = 5;
 
-var toolIsReady = true;
+var toolIsReady = false;
 var toolState = {
 	'blank' : true,
 	'knifeL': false,
