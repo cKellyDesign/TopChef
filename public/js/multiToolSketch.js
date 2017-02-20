@@ -41,6 +41,7 @@ function MultiTool () {
 			var pin = $('#prinfield').val();
 			self.socket.emit('check-pin', { pin : Number(pin) });
 		});
+		$('#knife, #spoon, #salt').on('click', self.onControllerClick);
 		// $('#container').append('<h1 id="stateEl">Ready!!</h1>'); // for rendering state stats
 
 		// Subscribe to Motion Events
@@ -51,7 +52,17 @@ function MultiTool () {
 	this.init = function () {
 		self.reconnectMarkup = $('#container').html();
 		$('#container').empty();
+		$('body').removeClass('notReady');
 		toolIsReady = true;
+	}
+
+	this.onControllerClick = function (e) {
+		var thisId = $(e.target).attr('id');
+		var newState = newState === 'salt'  ? 'shaker' :
+									 newState === 'knife' ? 'knifeR' : thisId;
+		debugger;
+		self.setState(newState);
+
 	}
 
 	this.onShake = function () {

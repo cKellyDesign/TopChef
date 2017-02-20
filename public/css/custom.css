@@ -36,6 +36,42 @@ body.multiTool input.submit {
 todo: use selectors below to set bg image to correct tool img
 
 */
+
+#toolControl {
+	position: fixed;
+	height: 15vh;
+	width: 100%;
+	top: 85vh;
+	background-color: #999;
+	transition: top .25s;
+}
+#toolControl > div {
+	display: inline-block;
+	height: 100%; width: 32.75%;
+	background-position: center center;
+	background-repeat: no-repeat;
+	background-size: contain;
+}
+
+#toolControl #knife {
+	background-image: url('/images/Tools/knife-icon.png');
+}
+#toolControl #spoon {
+	background-image: url('/images/Tools/spoon-icon.png');
+}
+#toolControl #salt {
+	background-image: url('/images/Tools/salt-icon.png');
+}
+
+body.multiTool.notReady #toolControl,
+body.multiTool.shaker #toolControl,
+body.multiTool.spoon #toolControl,
+body.multiTool.knifeL #toolControl,
+body.multiTool.knifeR #toolControl {
+	top: 100vh;
+}
+
+
 body.multiTool #container {
 	background-repeat: no-repeat;
 	transition: background-position .15s;
