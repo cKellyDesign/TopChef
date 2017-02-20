@@ -67,28 +67,28 @@ var dragOnion = false;*/
 function preload(){
 
 	//LOAD COUNTERTOP IMAGES
-	pan = loadImage('img/pan.png');
-	board = loadImage('img/board.png');
-	stove = loadImage('img/stove.png');
-	chicken = loadImage('img/chicken.png');
+	pan = loadImage('/images/pan.png');
+	board = loadImage('/images/board.png');
+	stove = loadImage('/images/stove.png');
+	chicken = loadImage('/images/chicken.png');
 
 	//LOAD FOOD 
-	redPepper = loadImage('img/pepper-r.png');
-	orangePepper = loadImage('img/pepper-o.png');
-	yellowPepper = loadImage('img/pepper-y.png');
-	broccoli = loadImage('img/broccoli.png');
-	carrot = loadImage('img/carrot.png');
-	cucumber = loadImage('img/cucumber.png');
-	mushroom = loadImage('img/mushroom.png');
-	onion = loadImage('img/onion.png');
+	redPepper = loadImage('/images/pepper-r.png');
+	orangePepper = loadImage('/images/pepper-o.png');
+	yellowPepper = loadImage('/images/pepper-y.png');
+	broccoli = loadImage('/images/broccoli.png');
+	carrot = loadImage('/images/carrot.png');
+	cucumber = loadImage('/images/cucumber.png');
+	mushroom = loadImage('/images/mushroom.png');
+	onion = loadImage('/images/onion.png');
 
 	//LOAD SOUNDS
 
-	cutting = loadSound('sounds/cutting.mp3');
-	scrape = loadSound('sounds/scrape.mp3');
-	sizzlingLoud = loadSound('sounds/sizzling-loud.mp3');
-	sizzlingSoft = loadSound('sounds/sizzling-soft.mp3');
-	noise = loadSound('sounds/kitchen-background.mp3');
+	cutting = loadSound('/sounds/cutting.mp3');
+	scrape = loadSound('/sounds/scrape.mp3');
+	sizzlingLoud = loadSound('/sounds/sizzling-loud.mp3');
+	sizzlingSoft = loadSound('/sounds/sizzling-soft.mp3');
+	noise = loadSound('/sounds/kitchen-background.mp3');
 }
 
 
@@ -121,7 +121,6 @@ function setup() {
 	// noise.loop();
 	
 }
-
 
 
 // DRAW
@@ -237,12 +236,17 @@ function CounterTop () {
 	var self = this;
 
 	this.handleSessionStarted = function (payload) {
-		console.log('Session Starting: ', payload.pin)
-	}
+		console.log('Session Starting: ', payload.pin);
+		console.log('Pair your device at http://[YOUR.IP.ADRESS]:8000/multitool.html');
+		// console.log('CounterTop Server Socket', payload.socket);
+	};
+
+	this.handleCookingAction = function (payload) {
+		console.log('COOKING ACTION!!!   ' + payload.action );
+	};
 
 	// initialize IO
 	this.socket = io();
-
 
 	// When connected, send dorthy event
 	this.socket.on('connect', function() {
@@ -253,7 +257,12 @@ function CounterTop () {
 	this.socket.on('session-started', this.handleSessionStarted);
 	this.socket.on('tool-connected', function(){
 		console.log("TOOL CONNECTED!!!");
-	})
+	});
+	this.socket.on('tool-disconnected', function (payload) {
+		console.log("tool disconnected : ", payload.pin);
+	});
+
+	this.socket.on('cooking-action', self.handleCookingAction);
 }
 
 window.counterTop = new CounterTop();
