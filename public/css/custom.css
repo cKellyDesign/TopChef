@@ -25,6 +25,8 @@ body.multiTool input {
 
 body.multiTool input.submit {
 	font-size: 30px;
+	background-color: rgb(50,255,50);
+    color: black;
 }
 
 
