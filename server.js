@@ -29,23 +29,49 @@ var io = require('socket.io').listen(server);
 // Listen for connection before assigning listeners
 io.sockets.on('connection', function (socket) {
 
-	// Listen for disconnection from either Oz or Dorthy
+	// Listen for disconnection from either Chef or Tool
 	socket.once('disconnect', function() {
 
+		var oldChef, oldTool;
 
-		// var oldChef = _.findWhere(counterTops, { id : this.id });
-		// if (oldChef) {
+		// If CounterTop is disconnected, refresh MultiTool
+		if (this.connectionType === 'chef') {
 
-		// }
+			oldChef = _.findWhere(counterTops, { id : this.id });
+			oldTool = _.findWhere(multiTools, { pin : oldChef && oldChef.pin });
 
-		// var oldTool 
+			if (oldTool && oldTool.multiToolSocket) {
+				oldTool.multiToolSocket.emit('counter-disconnected');
+			}
 
+			counterTops.splice(counterTops.indexOf(oldChef), 1);
+
+
+		// If paired MultiTool is disconnected, alert CounterTop to re-pair
+		} else if (this.connectionType === 'tool') {
+
+			oldTool = _.findWhere(multiTools, { id : this.id });
+			oldChef = _.findWhere(counterTops, { pin : oldTool && oldTool.pin });
+
+			if (oldChef && oldChef.counterTopSocket) {
+				oldChef.counterTopSocket.emit('tool-disconnected', { pin : oldChef.pin});
+				oldChef.multiToolSocket = null;
+			}
+
+			multiTools.splice(multiTools.indexOf(oldTool), 1);		
+
+		// If unpaired MultiTool is disconnected
+		} else {
+			oldTool = _.findWhere(multiTools, { id : this.id });
+			multiTools.splice(multiTools.indexOf(oldTool), 1);
+		}
 
 		socket.disconnect();
 	})
 
 	/// Listen for new CounterTop
 	socket.on('counter-top-init', function () {
+		this.connectionType = 'chef';
 		var newChef = {
 			id: this.id,
 			pin: (Math.floor(Math.random()*90000) + 10000),
@@ -64,6 +90,7 @@ io.sockets.on('connection', function (socket) {
 	});
 
 	socket.on('multi-tool-init', function (payload) {
+		this.connectionType = 'tool';
 		 console.log('new MultiTool -', payload.pin);
 			var chef = _.findWhere(counterTops, { pin : payload.pin });
 
