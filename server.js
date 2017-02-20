@@ -13,6 +13,8 @@ app.get('/mulitool', function (req, res) {
 	res.sendFile(path.resolve(__dirname, 'public', 'multiTool.html'));
 });
 
+app.use('/scripts', express.static(path.join(__dirname, '/public/img')));
+
 // start up the server on port 3000
 var server = app.listen(process.env.PORT || 8000, function() {
 	console.log('Express Server running on port %s', this.address().port);
