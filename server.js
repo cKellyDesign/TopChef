@@ -5,21 +5,13 @@ var app = express();
 
 // Static Express Server Settings
 app.set('case sensitive routing', false);
-// app.use(express.static('./public'));
-
-
+app.use(express.static('./public'));
 app.get('/', function (req, res) {
 	res.sendFile(path.resolve(__dirname, 'public', 'index.html'));
 });
 app.get('/mulitool', function (req, res) {
 	res.sendFile(path.resolve(__dirname, 'public', 'multiTool.html'));
 });
-
-app.use('/img', express.static(__dirname + '/public/img'));
-app.use('/css', express.static(__dirname + '/public/css'));
-app.use('/js', express.static(__dirname + '/public/js'));
-app.use('/sounds', express.static(__dirname + '/public/sounds'));
-
 
 // start up the server on port 3000
 var server = app.listen(process.env.PORT || 8000, function() {
