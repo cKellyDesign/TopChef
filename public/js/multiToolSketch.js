@@ -10,7 +10,7 @@ var accThreshold = 1.25;
 var xR, yR, zR;
 var rotThreshold = 5;
 
-var toolIsReady = false;
+var toolIsReady = true;
 var toolState = {
 	'blank' : true,
 	'knifeL': false,
@@ -58,8 +58,23 @@ function MultiTool () {
 		if (!toolIsReady) return;
 		// $('#container').prepend('<p class="shake">' + actionLegend[toolState.state] + '</p>');
 
-		navigator.vibrate(250);
-		if (!toolState.blank) self.socket.emit('cooking-action', { type : toolState.state, action : actionLegend[toolState.state] });
+		
+		$('body').addClass('action');
+
+		window.setTimeout(function(){
+			$('body').removeClass('action');
+
+			window.setTimeout(function(){
+				navigator.vibrate(200);
+				if (!toolState.blank && self.pin ) {
+					self.socket.emit('cooking-action', { 
+						type : toolState.state, 
+						action : actionLegend[toolState.state] 
+					});
+				}
+			}, 150);
+		}, 200);
+		
 	}
 
 	this.onDeviceMotion = function (e) {

@@ -35,18 +35,39 @@ body.multiTool input.submit {
 todo: use selectors below to set bg image to correct tool img
 
 */
-body.multiTool.blank {
-	background-color: white;
+body.multiTool {
+	background-repeat: no-repeat;
+	transition: background-position .15s;
+	transition-timing-function: ease-in;
 }
+body.multiTool.action {
+	transition-timing-function: ease-out;
+}
+
 body.multiTool.knifeL {
-	background-color: red;
+	background-position: top right;
+	background-image: url("/img/Tools/knife-side3.png");
+	background-size: 55%;
 }
 body.multiTool.knifeR {
-	background-color: orange;
+	background-position: top left;
+	background-image: url("/img/Tools/knife-side2.png");
+	background-size: 55%;
 }
+body.multiTool.knifeL.action {
+	background-position: top left;
+}
+body.multiTool.knifeR.action {
+	background-position: top right;
+}
+
 body.multiTool.spoon {
 	background-color: blue;
 }
 body.multiTool.shaker {
 	background-color: green;
+}
+
+body.multiTool.blank {
+	background: white;
 }
