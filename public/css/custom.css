@@ -47,12 +47,12 @@ body.multiTool.action #container {
 
 body.multiTool.knifeL #container {
 	background-position: top right;
-	background-image: url("/img/Tools/knife-side3.png");
+	background-image: url("/images/Tools/knife-side3.png");
 	background-size: 55%;
 }
 body.multiTool.knifeR #container {
 	background-position: top left;
-	background-image: url("/img/Tools/knife-side2.png");
+	background-image: url("/images/Tools/knife-side2.png");
 	background-size: 55%;
 }
 body.multiTool.knifeL.action #container {
@@ -63,13 +63,13 @@ body.multiTool.knifeR.action #container {
 }
 
 body.multiTool.spoon #container {
-	background-image: url("/img/Tools/spoon2.png");
+	background-image: url("/images/Tools/spoon2.png");
 	background-position: top center;
 	transition: none;
 	background-size: 60%;
 }
 body.multiTool.shaker #container {
-	background-image: url("/img/Tools/salt2.png");
+	background-image: url("/images/Tools/salt2.png");
 	background-size: cover;
 	transition: none;
 }
