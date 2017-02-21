@@ -30,7 +30,7 @@ function Chicken() {
 // DECLARE FOOD 
 
 function Pepper(x, y) {
-	pepperWidth = boardWidth * .125;
+	pepperWidth = boardWidth * .09;
 	pepperHeight = pepperWidth * 1.21;
 	pepperX = windowWidth-boardWidth*.5;
 	pepperY = windowHeight * .2;
@@ -43,7 +43,7 @@ function Pepper(x, y) {
 }
 
 function Broccoli() {
-	broccoliWidth = boardWidth * .25;
+	broccoliWidth = boardWidth * .19;
 	broccoliHeight = broccoliWidth * 1.09;
 	broccoliX = windowWidth-boardWidth*.75;
 	broccoliY = windowHeight * .2;
@@ -82,7 +82,7 @@ function Cucumber () {
 }
 
 function Mushroom () {
-	mushroomWidth = boardWidth * .1;
+	mushroomWidth = boardWidth * .06;
 	mushroomHeight = mushroomWidth * .96;
 	mushroomX = windowWidth-boardWidth;
 	mushroomY = windowHeight * .2;
