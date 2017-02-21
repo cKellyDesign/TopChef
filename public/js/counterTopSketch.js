@@ -321,14 +321,16 @@ function draw() {
 			translate(boardAnchorX - boardAnimX, boardAnchorY - boardAnimY);
 			rotate(PI * boardRotation);
 		} else {
-			translate(0, panY - (panHeight * .175));
+			translate(panX, panY - (panHeight * .175));
 		}
 		
 
 		for (var v = 0; v < chopState[veg].slices.length; v++) {
 			push();
-			translate(chopState[veg].bX, chopState[veg].bY)
-			rotate(chopState[veg].slices[v].rotation);
+			if (boardState[veg] || choppedVeggies.indexOf(veg) !== -1) {
+				translate(chopState[veg].bX, chopState[veg].bY);
+				rotate(chopState[veg].slices[v].rotation);
+			}
 			image(
 				chopState[veg].chopped, // chopped Image
 				chopState[veg].slices[v].xOffset, // X coordinates
