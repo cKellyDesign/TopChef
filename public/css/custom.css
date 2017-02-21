@@ -103,7 +103,7 @@ body.multiTool.spoon #container {
 body.multiTool.shaker #container {
 	background-image: url("/images/Tools/salt-sm.png");
 	background-size: contain;
-	background-position: center;
+	background-position: top center;
 	transition: none;
 }
 
