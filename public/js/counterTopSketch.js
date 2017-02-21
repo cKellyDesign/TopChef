@@ -96,6 +96,7 @@ var boardState = {
 };
 
 var choppedVeggies = [];
+var fryingVeggies = [];
 
 var chopState = {
 	redPepper : {
@@ -253,11 +254,29 @@ function draw() {
 
 	// Rendering Veggies if they still need to be chopped
 	if ( chopState.redPepper.slices.length < chopCount ) {
-		image(redPepper, pepperX, pepperY, pepperWidth, pepperHeight);
+		if (boardState.redPepper){
+			push();
+			translate(boardAnchorX - boardAnimX, boardAnchorY - boardAnimY);
+			rotate(PI * boardRotation);
+		}
+		image(redPepper, 
+					(boardState.redPepper ? chopState.redPepper.bX : pepperX), 
+					(boardState.redPepper ? chopState.redPepper.bY : pepperY), 
+					pepperWidth, pepperHeight);
+		if (boardState.redPepper) pop();
 	}
 
 	if ( chopState.broccoli.slices.length < chopCount ) {
-		image(broccoli, broccoliX, broccoliY, broccoliWidth, broccoliHeight);
+		if (boardState.broccoli){
+			push();
+			translate(boardAnchorX - boardAnimX, boardAnchorY - boardAnimY);
+			rotate(PI * boardRotation);
+		}
+		image(broccoli, 
+					(boardState.broccoli ? chopState.broccoli.bX : broccoliX), 
+					(boardState.broccoli ? chopState.broccoli.bY : broccoliY), 
+					broccoliWidth, broccoliHeight);
+		if (boardState.broccoli) pop();
 	}
 
 	if ( chopState.carrot.slices.length < chopCount ) {
@@ -266,15 +285,28 @@ function draw() {
 			translate(boardAnchorX - boardAnimX, boardAnchorY - boardAnimY);
 			rotate(PI * boardRotation);
 		} 
-		image(carrot, (boardState.carrot ? chopState.carrot.bX : carrotX), (boardState.carrot ? chopState.carrot.bY : carrotY), carrotWidth, carrotHeight);
+		image(carrot, 
+					(boardState.carrot ? chopState.carrot.bX : carrotX), 
+					(boardState.carrot ? chopState.carrot.bY : carrotY), 
+					carrotWidth, carrotHeight);
 		if (boardState.carrot) pop();
 	}
 
 	// Render Slices
-	push();
-	translate(boardAnchorX - boardAnimX, boardAnchorY - boardAnimY);
-	rotate(PI * boardRotation);
+	
+	
 	for (var veg in chopState) {
+
+		push();
+
+		if (boardState[veg] || choppedVeggies.indexOf(veg) !== -1) {
+			translate(boardAnchorX - boardAnimX, boardAnchorY - boardAnimY);
+			rotate(PI * boardRotation);
+		} else {
+			translate(0, panY - (panHeight * .175));
+		}
+		
+
 		for (var v = 0; v < chopState[veg].slices.length; v++) {
 			push();
 			translate(chopState[veg].bX, chopState[veg].bY)
@@ -288,8 +320,10 @@ function draw() {
 			)
 			pop();
 		}
+
+		pop();
 	}
-	pop();
+	
 	
 }
 
@@ -458,8 +492,8 @@ function CounterTop () {
 				var range = 75;
 
 				chopState[boardState.veggieOnBoard].slices.push({ 
-					xOffset : (random( -100, 100) / 100) * (chopState[boardState.veggieOnBoard].w || 5), 
-					yOffset : (random( -100, 100) / 100) * (chopState[boardState.veggieOnBoard].h || 5),
+					xOffset : (random( -50, 50) / 100) * (chopState[boardState.veggieOnBoard].w || 5), 
+					yOffset : (random( -50, 50) / 100) * (chopState[boardState.veggieOnBoard].h || 5),
 					rotation: random(360)
 				});
 
@@ -492,6 +526,7 @@ function CounterTop () {
 					chopState.broccoli.y = panY  * .7;					
 				break;
 			}
+			fryingVeggies.push(vegToSwipe);
 
 		}
 	};
