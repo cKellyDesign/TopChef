@@ -404,7 +404,6 @@ function mousePressed(){
 
 }
 
-
 //DRAGGING FOOD EVENT 
 function mouseDragged(){
 	if(dragCarrot == true){
