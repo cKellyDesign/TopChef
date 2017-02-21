@@ -76,7 +76,7 @@ function MultiTool () {
 
 		window.setTimeout(function(){
 			$('body').removeClass('action');
-			navigator.vibrate(200);
+			if (navigator.vibrate) navigator.vibrate(200);
 			if (!toolState.blank && self.pin ) {
 				self.socket.emit('cooking-action', { 
 					type : toolState.state, 
@@ -298,3 +298,47 @@ function MultiTool () {
 	})
 
 }
+
+
+
+
+var codes = {
+  48: 0,
+  49: 1,
+  50: 2,
+  51: 3,
+  52: 4,
+  53: 5,
+  54: 6,
+  55: 7,
+  56: 8,
+  57: 9
+},
+myInput = document.getElementById("prinfield");
+
+var keydownHelper = function (e) {
+  e.preventDefault();
+  myInput.removeEventListener("input", inputHelper); 
+
+  var val = myInput.value;
+
+  // Delete
+  if (e.keyCode === 8 && val.length) {
+    myInput.value = val.slice(0, val.length - 1);
+    return;
+  }
+
+  // If not a number, do nada
+  if (typeof codes[e.keyCode] === "undefined") { return; }
+
+  val += codes[e.keyCode];
+  myInput.value = val;
+};
+
+var inputHelper = function (e) {
+  e.preventDefault();
+  window.removeEventListener("keydown", keydownHelper);
+};
+
+myInput.addEventListener("input", inputHelper);
+window.addEventListener("keydown", keydownHelper); 
