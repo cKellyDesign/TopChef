@@ -68,7 +68,7 @@ function MultiTool () {
 	}
 
 	this.onShake = function () {
-		if (!toolIsReady) return;
+		if (!toolIsReady || $('body').hasClass('motion') ) return;
 		// $('#container').prepend('<p class="shake">' + actionLegend[toolState.state] + '</p>');
 
 		
@@ -88,7 +88,7 @@ function MultiTool () {
 	}
 
 	this.onDeviceMotion = function (e) {
-		if (!toolIsReady) return;
+		if (!toolIsReady && !(toolState.state === 'knifeR' || toolState.state === 'knifeL') ) return;
 		var acc = e.originalEvent.accelerationIncludingGravity;
 
 		if (acc.y < -3 ) {
@@ -101,6 +101,7 @@ function MultiTool () {
 					type : 'swipe', 
 					action : 'scrape!!' 
 				});
+				navigator.vibrate(400);
 			}
 		}
 
@@ -196,11 +197,7 @@ function MultiTool () {
 		$('body').removeClass(toolState.pState).addClass(toolState.state);
 		// if (!!navigator.vibrate) navigator.vibrate(75);
 		// self.renderState(newState);
-		if (newState === 'knifeR' || newState === 'knifeL') {
-			$(window).on('devicemotion', self.onDeviceMotion);
-		} else {
-			$(window).off('devicemotion', self.onDeviceMotion);
-		}
+		
 	}
 
 	this.determineState = function (orr) {
@@ -291,6 +288,13 @@ function MultiTool () {
 		location.reload();
 	});
 
+	this.socket.on('space-down', function spaceDown () {
+		$('body').addClass('motion');
+		$(window).on('devicemotion', self.onDeviceMotion);
+	});
+	this.socket.on('space-up', function spaceUp () {
+		$('body').removeClass('motion');
+		$(window).off('devicemotion', self.onDeviceMotion);
+	})
+
 }
-
-

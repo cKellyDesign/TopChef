@@ -320,6 +320,18 @@ function mouseReleased(){
 }
 
 
+function keyPressed (e) {
+	if (keyCode == 32) {
+		window.counterTop.socket.emit('space-down');
+	}
+}
+function keyReleased (e) {
+	if (keyCode == 32) {
+		window.counterTop.socket.emit('space-up');
+	}
+}
+
+
 function isVeggieOverBoard (xyV) {
 	var veggieX = xyV[0],
 		veggieY = xyV[1],

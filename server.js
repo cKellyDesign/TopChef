@@ -90,6 +90,15 @@ io.sockets.on('connection', function (socket) {
 		this.emit('session-started', { pin : newChef.pin });
 	});
 
+	socket.on('space-down', function() {
+		var chef = _.findWhere(counterTops, { id: this.id });
+		chef.multiToolSocket.emit('space-down');
+	});
+	socket.on('space-up', function() {
+		var chef = _.findWhere(counterTops, { id: this.id });
+		chef.multiToolSocket.emit('space-up');
+	});
+
 	// Listen for new MultiTool
 	socket.on('check-pin', function (payload) {
 		var isMatch = _.findWhere(counterTops, { pin : payload.pin });
@@ -108,6 +117,7 @@ io.sockets.on('connection', function (socket) {
 				counterTopSocket: chef.counterTopSocket
 			};
 
+			chef.multiToolSocket = this;
 			multiTools.push(newTool);
 			this.emit('session-started');
 			newTool.counterTopSocket.emit('tool-connected');
