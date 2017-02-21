@@ -88,6 +88,8 @@ var boardState = {
 	carrot : false
 };
 
+var choppedVeggies = [];
+
 var chopState = {
 	redPepper : {
 		image : null,
@@ -366,6 +368,7 @@ function CounterTop () {
 
 				if (chopState[boardState.veggieOnBoard].slices.length === chopCount) {
 					boardState[boardState.veggieOnBoard] = false;
+					choppedVeggies.push(boardState.veggieOnBoard);
 					boardState.veggieOnBoard = '';
 
 					// If multiple vegitables on board then reset active veg
