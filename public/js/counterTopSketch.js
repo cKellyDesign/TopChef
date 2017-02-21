@@ -75,6 +75,7 @@ function Carrot() {
 }
 
 var cucumber, lettuce, mushroom, onion, potato, tomato; 
+var windowW, windowH;
 
 //Flags that determine if mouse is in the radius of a certain food when pressed
 var dragredPepper = false;
@@ -86,7 +87,7 @@ var dragCucumber = false;
 var dragMushroom = false;
 var dragOnion = false;*/
 
-
+var clutchIsEngaged = false;
 var boardState = {
 	veggieOnBoard : '',
 	redPepper : false,
@@ -104,6 +105,8 @@ var chopState = {
 		choppedH : 0,
 		x : 0,
 		y : 0,
+		bX : 0,
+		bY : 0,
 		slices: [] // { xOffset : 88, Offset: 88, r: 29 }
 	},
 	broccoli : {
@@ -113,6 +116,8 @@ var chopState = {
 		choppedH : 0,
 		x : 0,
 		y : 0,
+		bX : 0,
+		bY : 0,
 		slices: []
 	},
 	carrot : {
@@ -122,6 +127,8 @@ var chopState = {
 		choppedH : 0,
 		x : 0,
 		y : 0,
+		bX : 0,
+		bY : 0,
 		slices: []
 	}
 };
@@ -173,8 +180,6 @@ function preload(){
 // SETUP
 
 function setup() {
-	createCanvas(windowWidth, windowHeight);
-
 	background('#BCC6CC');
 
 	Board();
@@ -184,6 +189,14 @@ function setup() {
 	Pepper();
 	Broccoli();
 	Carrot();
+
+	createCanvas(windowWidth, windowHeight);
+	boardAnchorX = windowWidth * .5;
+	boardAnchorY = windowHeight - boardHeight * .55;
+	boardDestY = panY + (panHeight * .1);
+	boardDestX = panX + (panWidth * .5);
+	boardAnimXinc = (boardAnchorX - boardDestX) / 15;
+	boardAnimYinc = (boardAnchorY - boardDestY) / 15;
 
 
 	//DRAW GAME BACKGROUND
@@ -200,27 +213,71 @@ function setup() {
 	
 }
 
+var boardRotation = 0,
+		boardAnchorX, boardAnchorY,
+		boardDestX, boardDestY,
+		boardAnimX = 0, boardAnimY = 0,
+		boardAnimXinc, boardAnimYinc,
+		boardAnimIndex = 0;
+
+function animateBoardToPan () {
+	if (clutchIsEngaged && boardRotation < 0.15) {
+		boardAnimIndex++;
+		boardRotation += 0.01;
+	} else if (!clutchIsEngaged && boardRotation > 0) {
+		boardAnimIndex--;
+		boardRotation -= 0.01;
+	}
+
+	boardAnimX = boardAnimXinc * boardAnimIndex;
+	boardAnimY = boardAnimYinc * boardAnimIndex;
+}
 
 // DRAW
 
 function draw() {
+
 	background('#BCC6CC');
 	imageMode(CENTER);
 	image(stove, stoveWidth * .5,  stoveHeight * .45, stoveWidth, stoveHeight);
 	image(pan, panX, panY, panWidth, panHeight);
-	image(board, windowWidth-boardWidth*.5, windowHeight-boardHeight*.55, boardWidth, boardHeight);
 	image(chicken, chickenX, chickenY, chickenWidth,chickenHeight);
 
+	push();
+	if (clutchIsEngaged || boardRotation) animateBoardToPan();
+	translate(boardAnchorX - boardAnimX, boardAnchorY - boardAnimY);
+	rotate(PI * boardRotation);
+	image(board, boardWidth * .5, 0, boardWidth, boardHeight);
+	pop();
+	
+
 	// Rendering Veggies if they still need to be chopped
-	if ( chopState.redPepper.slices.length < chopCount ) image(redPepper, pepperX, pepperY, pepperWidth, pepperHeight);
-	if ( chopState.broccoli.slices.length < chopCount ) image(broccoli, broccoliX, broccoliY, broccoliWidth, broccoliHeight);
-	if ( chopState.carrot.slices.length < chopCount ) image(carrot, carrotX, carrotY, carrotWidth, carrotHeight);
+	if ( chopState.redPepper.slices.length < chopCount ) {
+		image(redPepper, pepperX, pepperY, pepperWidth, pepperHeight);
+	}
+
+	if ( chopState.broccoli.slices.length < chopCount ) {
+		image(broccoli, broccoliX, broccoliY, broccoliWidth, broccoliHeight);
+	}
+
+	if ( chopState.carrot.slices.length < chopCount ) {
+		if (boardState.carrot){
+			push();
+			translate(boardAnchorX - boardAnimX, boardAnchorY - boardAnimY);
+			rotate(PI * boardRotation);
+		} 
+		image(carrot, (boardState.carrot ? chopState.carrot.bX : carrotX), (boardState.carrot ? chopState.carrot.bY : carrotY), carrotWidth, carrotHeight);
+		if (boardState.carrot) pop();
+	}
 
 	// Render Slices
+	push();
+	translate(boardAnchorX - boardAnimX, boardAnchorY - boardAnimY);
+	rotate(PI * boardRotation);
 	for (var veg in chopState) {
 		for (var v = 0; v < chopState[veg].slices.length; v++) {
 			push();
-			translate(chopState[veg].x, chopState[veg].y)
+			translate(chopState[veg].bX, chopState[veg].bY)
 			rotate(chopState[veg].slices[v].rotation);
 			image(
 				chopState[veg].chopped, // chopped Image
@@ -232,6 +289,7 @@ function draw() {
 			pop();
 		}
 	}
+	pop();
 	
 }
 
@@ -334,6 +392,7 @@ function keyPressed (e) {
 	switch (keyCode) {
 		case 32: // "space"
 			window.counterTop.socket.emit('space-down');
+			clutchIsEngaged = true;
 		break;
 		case 67: // "c"
 			window.counterTop.handleCookingAction({ type: 'knifeR' });
@@ -350,6 +409,7 @@ function keyPressed (e) {
 function keyReleased (e) {
 	if (keyCode == 32) {
 		window.counterTop.socket.emit('space-up');
+		clutchIsEngaged = false;
 	}
 }
 
@@ -366,6 +426,8 @@ function isVeggieOverBoard (xyV) {
 		boardState[veggieType] = true;
 		chopState[veggieType].x = veggieX;
 		chopState[veggieType].y = veggieY;
+		chopState[veggieType].bX = veggieX - boardAnchorX;
+		chopState[veggieType].bY = veggieY - boardAnchorY;
 	}
 }
 
