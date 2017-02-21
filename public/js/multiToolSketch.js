@@ -31,6 +31,8 @@ var actionLegend = {
 	'shaker': 'Sprinkle!!',
 };
 
+var accCounter = 0;
+
 // Main JS for detecting and sendng events, and telling p5 to do things
 function MultiTool () {
 	var self = this;
@@ -66,7 +68,7 @@ function MultiTool () {
 	}
 
 	this.onShake = function () {
-		if (!toolIsReady) return;
+		if (!toolIsReady || $('body').hasClass('motion') ) return;
 		// $('#container').prepend('<p class="shake">' + actionLegend[toolState.state] + '</p>');
 
 		
@@ -86,14 +88,27 @@ function MultiTool () {
 	}
 
 	this.onDeviceMotion = function (e) {
-		if (!toolIsReady) return;
+		if (!toolIsReady && !(toolState.state === 'knifeR' || toolState.state === 'knifeL') ) return;
 		var acc = e.originalEvent.accelerationIncludingGravity;
 
-		self.handleAcceleration(acc);
+		if (acc.y < -3 ) {
+			
+			accCounter++;
+			if (accCounter === 10) {
+				accCounter = 0;
+				
+				self.socket.emit('cooking-action', { 
+					type : 'swipe', 
+					action : 'scrape!!' 
+				});
+				navigator.vibrate(400);
+			}
+		}
 
 		x = acc.x;
 		y = acc.y;
 		z = acc.z;
+		// self.handleAcceleration(acc);
 	}
 
 	this.handleAcceleration = function (acc) {
@@ -182,6 +197,7 @@ function MultiTool () {
 		$('body').removeClass(toolState.pState).addClass(toolState.state);
 		// if (!!navigator.vibrate) navigator.vibrate(75);
 		// self.renderState(newState);
+		
 	}
 
 	this.determineState = function (orr) {
@@ -272,6 +288,13 @@ function MultiTool () {
 		location.reload();
 	});
 
+	this.socket.on('space-down', function spaceDown () {
+		$('body').addClass('motion');
+		$(window).on('devicemotion', self.onDeviceMotion);
+	});
+	this.socket.on('space-up', function spaceUp () {
+		$('body').removeClass('motion');
+		$(window).off('devicemotion', self.onDeviceMotion);
+	})
+
 }
-
-
