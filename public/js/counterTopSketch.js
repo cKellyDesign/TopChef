@@ -355,7 +355,7 @@ function CounterTop () {
 	};
 
 	this.handleCookingAction = function (payload) {
-		console.log('COOKING ACTION!!!   ' + payload.type );
+		// console.log('COOKING ACTION!!!   ' + payload.type );
 		if ( payload.type === 'knfieL' || payload.type === 'knifeR') {
 
 			if ( !!boardState.veggieOnBoard && chopState[boardState.veggieOnBoard].slices.length < chopCount) {
@@ -376,6 +376,24 @@ function CounterTop () {
 						if (!!boardState[veg]) boardState.veggieOnBoard = veg;
 					}
 				}
+			}
+
+
+		} else if ( choppedVeggies.length && payload.type === 'swipe' ) {
+			var vegToSwipe = choppedVeggies.shift();
+			switch(vegToSwipe) {
+				case 'redPepper':
+					chopState.redPepper.x = panX;
+					chopState.redPepper.y = panY  * .7;
+				break;
+				case 'carrot':
+					chopState.carrot.x = panX;
+					chopState.carrot.y = panY * .7;
+				break;
+				case 'broccoli':
+					chopState.broccoli.x = panX;
+					chopState.broccoli.y = panY  * .7;					
+				break;
 			}
 
 		}

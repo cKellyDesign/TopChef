@@ -96,7 +96,11 @@ function MultiTool () {
 			accCounter++;
 			if (accCounter === 10) {
 				accCounter = 0;
-				console.log('swipe!!');
+				
+				self.socket.emit('cooking-action', { 
+					type : 'swipe', 
+					action : 'scrape!!' 
+				});
 			}
 		}
 
