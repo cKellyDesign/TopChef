@@ -40,8 +40,7 @@ todo: use selectors below to set bg image to correct tool img
 #toolControl {
 	position: fixed;
 	height: 15vh;
-	width: 100%;
-	top: 85vh;
+	bottom: 0; right: 0; left: 0;
 	background-color: rgba(0,0,0,.5);
 	transition: top .25s;
 }
