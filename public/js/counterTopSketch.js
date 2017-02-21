@@ -97,8 +97,8 @@ function Mushroom () {
 function Onion () {
 	onionWidth = boardWidth * .1;
 	onionHeight = onionWidth * 1.24;
-	onionX = windowWidth-boardWidth;
-	onionY = windowHeight * .1;
+	onionX = windowWidth-boardWidth*.3;
+	onionY = windowHeight * .3;
 
 	onionSliceHeight = onionHeight * .5;
 	onionSliceWidth = onionSliceHeight;
@@ -281,8 +281,12 @@ function setup() {
 	Mushroom();
 	Onion();
 
+	//LOAD BUTTONS
+  	muteButton = createButton ("MUTE SOUND");
+  	muteButton.mousePressed(mute);
 
-	//DRAW GAME BACKGROUND
+
+	//SET GAME BACKGROUND
 	imageMode(CENTER);
 	image(stove, stoveWidth * .5,  stoveHeight * .45, stoveWidth, stoveHeight);
 	image(pan, panX, panY, panWidth, panHeight);
@@ -297,7 +301,7 @@ function setup() {
 
 
 	
-	// noise.loop();
+	noise.loop();
 	
 }
 
@@ -305,6 +309,10 @@ function setup() {
 // DRAW
 
 function draw() {
+
+	//DRAW MUTE BUTTON
+ 	 muteButton.position(windowWidth*.75, windowHeight * .02);
+
 	background('#BCC6CC');
 	imageMode(CENTER);
 	image(stove, stoveWidth * .5,  stoveHeight * .45, stoveWidth, stoveHeight);
@@ -459,6 +467,23 @@ function isVeggieOverBoard (xyV) {
 		chopState[veggieType].x = veggieX;
 		chopState[veggieType].y = veggieY;
 	}
+}
+
+//MUTE SOUND 
+function mute() {
+
+ if (!noise.isPlaying()) {
+   noise.play();
+   // noise.setVolume(0);
+   muteButton.html("UNMUTE")
+ } else {
+   // noise.setVolume(.5);
+   noise.pause();
+   muteButton.html("MUTE SOUND")
+ }
+
+
+
 }
 
 
