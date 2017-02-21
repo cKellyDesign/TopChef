@@ -38,6 +38,8 @@ function Pepper(x, y) {
 	pepperSliceHeight = pepperHeight;
 	pepeprSliceWidth = pepperSliceHeight * .5;
 
+	chopState.redPepper.h = pepperHeight;
+	chopState.redPepper.w = pepperWidth;
 	chopState.redPepper.choppedW = pepeprSliceWidth;
 	chopState.redPepper.choppedH = pepperSliceHeight;
 }
@@ -51,6 +53,8 @@ function Broccoli() {
 	broccoliSliceHeight = broccoliHeight * .5;
 	broccoliSliceWidth = broccoliSliceHeight * .56;
 
+	chopState.broccoli.h = broccoliHeight;
+	chopState.broccoli.w = broccoliWidth;
 	chopState.broccoli.choppedW = broccoliSliceWidth;
 	chopState.broccoli.choppedH = broccoliSliceHeight;
 }
@@ -64,6 +68,8 @@ function Carrot() {
 	carrotSliceHeight = carrotHeight * .5;
 	carrotSliceWidth = carrotSliceHeight;
 
+	chopState.carrot.h = carrotHeight;
+	chopState.carrot.w = carrotWidth;
 	chopState.carrot.choppedW = carrotSliceWidth;
 	chopState.carrot.choppedH = carrotSliceHeight;
 }
@@ -213,14 +219,17 @@ function draw() {
 	// Render Slices
 	for (var veg in chopState) {
 		for (var v = 0; v < chopState[veg].slices.length; v++) {
-
+			push();
+			translate(chopState[veg].x, chopState[veg].y)
+			rotate(chopState[veg].slices[v].rotation);
 			image(
 				chopState[veg].chopped, // chopped Image
-				chopState[veg].x + chopState[veg].slices[v].xOffset, // X coordinates
-				chopState[veg].y + chopState[veg].slices[v].yOffset, // Y coordinates
+				chopState[veg].slices[v].xOffset, // X coordinates
+				chopState[veg].slices[v].yOffset, // Y coordinates
 				chopState[veg].choppedW, // chopped Width
 				chopState[veg].choppedH  // chopped Height
 			)
+			pop();
 		}
 	}
 	
@@ -321,9 +330,22 @@ function mouseReleased(){
 
 
 function keyPressed (e) {
-	if (keyCode == 32) {
-		window.counterTop.socket.emit('space-down');
+
+	switch (keyCode) {
+		case 32: // "space"
+			window.counterTop.socket.emit('space-down');
+		break;
+		case 67: // "c"
+			window.counterTop.handleCookingAction({ type: 'knifeR' });
+		break;
+		case 83: // "s"
+			window.counterTop.handleCookingAction({ type: 'swipe' });
+		break;
 	}
+
+	// if (keyCode == 32) {
+		
+	// } else if (keyCode ==)
 }
 function keyReleased (e) {
 	if (keyCode == 32) {
@@ -374,8 +396,9 @@ function CounterTop () {
 				var range = 75;
 
 				chopState[boardState.veggieOnBoard].slices.push({ 
-					xOffset : random( -range, range), 
-					yOffset : random( -range, range) 
+					xOffset : (random( -100, 100) / 100) * (chopState[boardState.veggieOnBoard].w || 5), 
+					yOffset : (random( -100, 100) / 100) * (chopState[boardState.veggieOnBoard].h || 5),
+					rotation: random(360)
 				});
 
 				if (chopState[boardState.veggieOnBoard].slices.length === chopCount) {
