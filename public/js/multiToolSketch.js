@@ -21,6 +21,7 @@ var toolState = {
 	'pState': 'blank'
 };
 var stateThreshold = 0;
+var isPro = false; // this could be turned on to enable "blank state" increasing difficulty
 
 var actionLegend = {
 	'blank' : '**',
@@ -71,20 +72,16 @@ function MultiTool () {
 		
 		$('body').addClass('action');
 
-		// window.setTimeout(function(){
-			
-
-			window.setTimeout(function(){
-				$('body').removeClass('action');
-				navigator.vibrate(200);
-				if (!toolState.blank && self.pin ) {
-					self.socket.emit('cooking-action', { 
-						type : toolState.state, 
-						action : actionLegend[toolState.state] 
-					});
-				}
-			}, 150);
-		// }, 200);
+		window.setTimeout(function(){
+			$('body').removeClass('action');
+			navigator.vibrate(200);
+			if (!toolState.blank && self.pin ) {
+				self.socket.emit('cooking-action', { 
+					type : toolState.state, 
+					action : actionLegend[toolState.state] 
+				});
+			}
+		}, 150);
 		
 	}
 
@@ -209,8 +206,8 @@ function MultiTool () {
 		} else if ( XisFlat && orr.yR > knifeYthreshold ) {
 			newState = 'knifeL';
 			
-		// } else if ( XisFlat && YisFlat ) {
-		// 	newState = 'blank';
+		} else if ( isPro && XisFlat && YisFlat ) {
+			newState = 'blank';
 		} 
 
 
