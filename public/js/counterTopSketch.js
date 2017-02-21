@@ -36,9 +36,9 @@ function Pepper(x, y) {
 	pepperY = windowHeight * .2;
 
 	pepperSliceHeight = pepperHeight;
-	pepeprSliceWidth = pepperSliceHeight * .5;
+	pepperSliceWidth = pepperSliceHeight * .5;
 
-	chopState.redPepper.choppedW = pepeprSliceWidth;
+	chopState.redPepper.choppedW = pepperSliceWidth;
 	chopState.redPepper.choppedH = pepperSliceHeight;
 }
 
@@ -68,24 +68,67 @@ function Carrot() {
 	chopState.carrot.choppedH = carrotSliceHeight;
 }
 
-var cucumber, lettuce, mushroom, onion, potato, tomato; 
+function Cucumber () {
+	cucumberWidth = boardWidth * .25;
+	cucumberHeight = cucumberWidth * .42;
+	cucumberX = windowWidth-boardWidth;
+	cucumberY = windowHeight * .3;
+
+	cucumberSliceHeight = cucumberHeight * .5;
+	cucumberSliceWidth = cucumberSliceHeight;
+
+	chopState.cucumber.choppedW = cucumberSliceWidth;
+	chopState.cucumber.choppedH = cucumberSliceHeight;
+}
+
+function Mushroom () {
+	mushroomWidth = boardWidth * .1;
+	mushroomHeight = mushroomWidth * .96;
+	mushroomX = windowWidth-boardWidth;
+	mushroomY = windowHeight * .2;
+
+	mushroomSliceHeight = mushroomHeight * .5;
+	mushroomSliceWidth = mushroomSliceHeight;
+
+	chopState.mushroom.choppedW = mushroomSliceWidth;
+	chopState.mushroom.choppedH = mushroomSliceHeight;
+}
+
+function Onion () {
+	onionWidth = boardWidth * .1;
+	onionHeight = onionWidth * 1.24;
+	onionX = windowWidth-boardWidth;
+	onionY = windowHeight * .1;
+
+	onionSliceHeight = onionHeight * .5;
+	onionSliceWidth = onionSliceHeight;
+
+	chopState.onion.choppedW = onionSliceWidth;
+	chopState.onion.choppedH = onionSliceHeight;
+}
+
+
+
 
 //Flags that determine if mouse is in the radius of a certain food when pressed
 var dragredPepper = false;
 var dragBroccoli = false;
 var dragCarrot = false;
-/*var dragOrangePepper = false;
-var dragYellowPepper = false;
 var dragCucumber = false;
+var dragOrangePepper = false;
+var dragYellowPepper = false;
 var dragMushroom = false;
-var dragOnion = false;*/
+var dragOnion = false;
 
 
 var boardState = {
 	veggieOnBoard : '',
 	redPepper : false,
 	broccoli : false,
-	carrot : false
+	carrot : false,
+	cucumber : false, 
+	mushroom : false, 
+	onion : false, 
 };
 
 var choppedVeggies = [];
@@ -117,8 +160,44 @@ var chopState = {
 		x : 0,
 		y : 0,
 		slices: []
+	},
+
+	cucumber : {
+		image : null, 
+		chopped : null, 
+		choppedW : 0,
+		choppedH : 0,
+		x : 0,
+		y : 0,
+		slices: []
+	},
+
+	mushroom : {
+		image : null, 
+		chopped : null, 
+		choppedW : 0,
+		choppedH : 0,
+		x : 0,
+		y : 0,
+		slices: []
+	},
+
+
+	onion : {
+		image : null, 
+		chopped : null, 
+		choppedW : 0,
+		choppedH : 0,
+		x : 0,
+		y : 0,
+		slices: []
 	}
+
+
+
+	
 };
+
 var chopCount = 5; // This number determines how many times to slice, this can be done dynamically for each veggie if we want, or could be used to increase difficulty
 
 
@@ -145,14 +224,34 @@ function preload(){
 	chopState.redPepper.image = redPepper;
 	chopState.broccoli.image = broccoli;
 	chopState.carrot.image = carrot;
+	chopState.cucumber.image = cucumber;
+	chopState.mushroom.image = mushroom;
+	chopState.onion.image = onion;
+
+
+	
+
 
 	redPepperSlice = loadImage('/images/Chopped/pepper-r-ch.png');
 	broccoliSlice = loadImage('/images/Chopped/broccoli-ch.png');
 	carrotSlice = loadImage('/images/Chopped/carrot-ch.png');
+	cucumberSlice = loadImage('/images/Chopped/cucumber-ch.png');
+	mushroomSlice = loadImage('/images/Chopped/mushroom-ch.png');
+	onionSlice = loadImage('/images/Chopped/onion-ch.png');
+
+	
 
 	chopState.redPepper.chopped = redPepperSlice;
 	chopState.broccoli.chopped = broccoliSlice;
 	chopState.carrot.chopped = carrotSlice;
+	chopState.cucumber.chopped = cucumberSlice;
+	chopState.mushroom.chopped = mushroomSlice;
+	chopState.onion.chopped = onionSlice;
+
+
+
+	
+
 
 	//LOAD SOUNDS
 
@@ -178,6 +277,9 @@ function setup() {
 	Pepper();
 	Broccoli();
 	Carrot();
+	Cucumber();
+	Mushroom();
+	Onion();
 
 
 	//DRAW GAME BACKGROUND
@@ -189,6 +291,11 @@ function setup() {
 	image(redPepper, pepperX, pepperY, pepperWidth, pepperHeight);
 	image(broccoli, broccoliX, broccoliY, broccoliWidth, broccoliHeight);
 	image(carrot, carrotX, carrotY, carrotWidth, carrotHeight);
+	image(cucumber, cucumberX, cucumberY, cucumberWidth, cucumberHeight);
+	image(mushroom, mushroomX, mushroomY, mushroomWidth, mushroomHeight);
+	image(onion, onionX, onionY, onionWidth, onionHeight);
+
+
 	
 	// noise.loop();
 	
@@ -209,6 +316,12 @@ function draw() {
 	if ( chopState.redPepper.slices.length < chopCount ) image(redPepper, pepperX, pepperY, pepperWidth, pepperHeight);
 	if ( chopState.broccoli.slices.length < chopCount ) image(broccoli, broccoliX, broccoliY, broccoliWidth, broccoliHeight);
 	if ( chopState.carrot.slices.length < chopCount ) image(carrot, carrotX, carrotY, carrotWidth, carrotHeight);
+	if ( chopState.cucumber.slices.length < chopCount ) image(cucumber, cucumberX, cucumberY, cucumberWidth, cucumberHeight);
+	if ( chopState.mushroom.slices.length < chopCount ) image(mushroom, mushroomX, mushroomY, mushroomWidth, mushroomHeight);
+	if ( chopState.onion.slices.length < chopCount ) image(onion, onionX, onionY, onionWidth, onionHeight);
+
+
+
 
 	// Render Slices
 	for (var veg in chopState) {
@@ -244,21 +357,24 @@ function mousePressed(){
 	if (dist(mouseX, mouseY, carrotX, carrotY) < carrotWidth * .5){
 		dragCarrot = true;
 	}
+	if (dist(mouseX, mouseY, cucumberX, cucumberY) < cucumberWidth * .5){
+		dragCucumber = true;
+	}
+	if (dist(mouseX, mouseY, mushroomX, mushroomY) < mushroomWidth * .5){
+		dragMushroom = true; 
+	}
+	if (dist(mouseX, mouseY, onionX, onionY) < onionWidth * .5){
+		dragOnion = true;
+	}
 	/*if (dist(mouseX, mouseY, yellowPepperX, yellowPepperY) < yellowPepperWidth * .5){
 		dragYellowPepper = true;
 	}
 	if (dist(mouseX, mouseY, orangePepperX, orangePepperY) < orangePepperWidth * .5){
 		dragOrangePepper = true;
 	}
-	if (dist(mouseX, mouseY, mushroomX, mushroomY) < mushroomWidth * .5){
-		dragMushroom = true; 
-	}
-	if (dist(mouseX, mouseY, cucumberX, cucumberY) < cucumberWidth * .5){
-		dragCucumber = true;
-	}
-	if (dist(mouseX, mouseY, onionX, onionY) < onionWidth * .5){
-		dragOnion = true;
-	}*/
+	
+	
+	*/
 
 }
 
@@ -277,26 +393,22 @@ function mouseDragged(){
 		pepperX = mouseX;
 		pepperY = mouseY;
 	}
-	/*if (dragOnion == true){
-		onionX = mouseX;
-		onionY = mouseY;
-	}
-	if(dragMushroom == true){
-		mushroomX = mouseX;
-		mushroomY = mouseY;
-	}
+
 	if(dragCucumber == true){
 		cucumberX = mouseX;
 		cucumberY = mouseY;
 	}
-	if(dragYellowPepper == true){
-		yellowPepperX = mouseX;
-		yellowPepperY = mouseY;
+
+	if(dragMushroom == true){
+		mushroomX = mouseX;
+		mushroomY = mouseY;
 	}
-	if(dragOrangePepper == true){
-		orangePepperX = mouseX;
-		orangePepperY = mouseY;
-	}*/
+
+	if (dragOnion == true){
+		onionX = mouseX;
+		onionY = mouseY;
+	}
+	
 
 }
 
@@ -305,18 +417,20 @@ function mouseDragged(){
 function mouseReleased(){
 	var veggieToCheck = dragredPepper ? [pepperX, pepperY, 'redPepper'] :
 						dragBroccoli  ? [broccoliX, broccoliY, 'broccoli'] :
-						dragCarrot    ? [carrotX, carrotY, 'carrot'] : [0,0, ''];
+						dragCarrot    ? [carrotX, carrotY, 'carrot'] : 
+						dragCucumber ? [cucumberX, cucumberY, 'cucumber'] : 
+						dragMushroom ? [mushroomX, mushroomY, 'mushroom'] :
+						dragOnion ? [onionX, onionY, 'onion'] : [0,0, ''];
+
 
 	isVeggieOverBoard(veggieToCheck); 
 	
 	dragredPepper = false;
 	dragBroccoli = false;
 	dragCarrot = false;
-	/*dragOrangePepper = false;
-	dragYellowPepper = false;
 	dragCucumber = false;
 	dragMushroom = false;
-	dragOnion = false;*/
+	dragOnion = false;
 }
 
 
