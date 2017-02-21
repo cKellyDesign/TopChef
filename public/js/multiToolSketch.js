@@ -41,7 +41,7 @@ function MultiTool () {
 			var pin = $('#prinfield').val();
 			self.socket.emit('check-pin', { pin : Number(pin) });
 		});
-		$('#knife, #spoon, #salt').on('click', self.onControllerClick);
+		$('#knife, #spoon, #shaker').on('click', self.onControllerClick);
 		// $('#container').append('<h1 id="stateEl">Ready!!</h1>'); // for rendering state stats
 
 		// Subscribe to Motion Events
@@ -58,9 +58,8 @@ function MultiTool () {
 
 	this.onControllerClick = function (e) {
 		var thisId = $(e.target).attr('id');
-		var newState = newState === 'salt'  ? 'shaker' :
-									 newState === 'knife' ? 'knifeR' : thisId;
-		debugger;
+		var newState = thisId === 'knife' ? 'knifeR' : thisId;
+		// debugger;
 		self.setState(newState);
 
 	}
@@ -72,10 +71,11 @@ function MultiTool () {
 		
 		$('body').addClass('action');
 
-		window.setTimeout(function(){
-			$('body').removeClass('action');
+		// window.setTimeout(function(){
+			
 
 			window.setTimeout(function(){
+				$('body').removeClass('action');
 				navigator.vibrate(200);
 				if (!toolState.blank && self.pin ) {
 					self.socket.emit('cooking-action', { 
@@ -84,7 +84,7 @@ function MultiTool () {
 					});
 				}
 			}, 150);
-		}, 200);
+		// }, 200);
 		
 	}
 
@@ -209,8 +209,8 @@ function MultiTool () {
 		} else if ( XisFlat && orr.yR > knifeYthreshold ) {
 			newState = 'knifeL';
 			
-		} else if ( XisFlat && YisFlat ) {
-			newState = 'blank';
+		// } else if ( XisFlat && YisFlat ) {
+		// 	newState = 'blank';
 		} 
 
 
