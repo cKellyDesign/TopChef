@@ -21,6 +21,7 @@ var toolState = {
 	'pState': 'blank'
 };
 var stateThreshold = 0;
+var isPro = false; // this could be turned on to enable "blank state" increasing difficulty
 
 var actionLegend = {
 	'blank' : '**',
@@ -41,6 +42,7 @@ function MultiTool () {
 			var pin = $('#prinfield').val();
 			self.socket.emit('check-pin', { pin : Number(pin) });
 		});
+		$('#knife, #spoon, #shaker').on('click', self.onControllerClick);
 		// $('#container').append('<h1 id="stateEl">Ready!!</h1>'); // for rendering state stats
 
 		// Subscribe to Motion Events
@@ -51,7 +53,16 @@ function MultiTool () {
 	this.init = function () {
 		self.reconnectMarkup = $('#container').html();
 		$('#container').empty();
+		$('body').removeClass('notReady');
 		toolIsReady = true;
+	}
+
+	this.onControllerClick = function (e) {
+		var thisId = $(e.target).attr('id');
+		var newState = thisId === 'knife' ? 'knifeR' : thisId;
+		// debugger;
+		self.setState(newState);
+
 	}
 
 	this.onShake = function () {
@@ -63,17 +74,14 @@ function MultiTool () {
 
 		window.setTimeout(function(){
 			$('body').removeClass('action');
-
-			window.setTimeout(function(){
-				navigator.vibrate(200);
-				if (!toolState.blank && self.pin ) {
-					self.socket.emit('cooking-action', { 
-						type : toolState.state, 
-						action : actionLegend[toolState.state] 
-					});
-				}
-			}, 150);
-		}, 200);
+			navigator.vibrate(200);
+			if (!toolState.blank && self.pin ) {
+				self.socket.emit('cooking-action', { 
+					type : toolState.state, 
+					action : actionLegend[toolState.state] 
+				});
+			}
+		}, 150);
 		
 	}
 
@@ -198,7 +206,7 @@ function MultiTool () {
 		} else if ( XisFlat && orr.yR > knifeYthreshold ) {
 			newState = 'knifeL';
 			
-		} else if ( XisFlat && YisFlat ) {
+		} else if ( isPro && XisFlat && YisFlat ) {
 			newState = 'blank';
 		} 
 

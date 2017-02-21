@@ -36,6 +36,38 @@ body.multiTool input.submit {
 todo: use selectors below to set bg image to correct tool img
 
 */
+
+#toolControl {
+	position: fixed;
+	height: 15vh;
+	width: 100%;
+	top: 85vh;
+	background-color: rgba(0,0,0,.5);
+	transition: top .25s;
+}
+#toolControl > div {
+	display: inline-block;
+	height: 100%; width: 32%;
+	background-position: center center;
+	background-repeat: no-repeat;
+	background-size: contain;
+}
+
+#toolControl #knife {
+	background-image: url('/images/Tools/knife-icon.png');
+}
+#toolControl #spoon {
+	background-image: url('/images/Tools/spoon-icon.png');
+}
+#toolControl #shaker {
+	background-image: url('/images/Tools/salt-icon.png');
+}
+
+body.multiTool.notReady #toolControl {
+	top: 100vh;
+}
+
+
 body.multiTool #container {
 	background-repeat: no-repeat;
 	transition: background-position .15s;
@@ -46,31 +78,32 @@ body.multiTool.action #container {
 }
 
 body.multiTool.knifeL #container {
-	background-position: top right;
-	background-image: url("/images/Tools/knife-side3.png");
+	background-position: top center;
+	background-image: url("/images/Tools/knifeL-sm.png");
 	background-size: 55%;
 }
 body.multiTool.knifeR #container {
-	background-position: top left;
-	background-image: url("/images/Tools/knife-side2.png");
+	background-position: top center;
+	background-image: url("/images/Tools/knifeR-sm.png");
 	background-size: 55%;
 }
 body.multiTool.knifeL.action #container {
-	background-position: top left;
+	background-position: top right;
 }
 body.multiTool.knifeR.action #container {
-	background-position: top right;
+	background-position: top left;
 }
 
 body.multiTool.spoon #container {
-	background-image: url("/images/Tools/spoon2.png");
+	background-image: url("/images/Tools/spoon-sm.png");
 	background-position: top center;
 	transition: none;
-	background-size: 60%;
+	background-size: 55%;
 }
 body.multiTool.shaker #container {
-	background-image: url("/images/Tools/salt2.png");
-	background-size: cover;
+	background-image: url("/images/Tools/salt-sm.png");
+	background-size: contain;
+	background-position: top center;
 	transition: none;
 }
 
