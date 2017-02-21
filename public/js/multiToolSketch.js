@@ -31,6 +31,8 @@ var actionLegend = {
 	'shaker': 'Sprinkle!!',
 };
 
+var accCounter = 0;
+
 // Main JS for detecting and sendng events, and telling p5 to do things
 function MultiTool () {
 	var self = this;
@@ -89,11 +91,19 @@ function MultiTool () {
 		if (!toolIsReady) return;
 		var acc = e.originalEvent.accelerationIncludingGravity;
 
-		self.handleAcceleration(acc);
+		if (acc.y < -3 ) {
+			
+			accCounter++;
+			if (accCounter === 10) {
+				accCounter = 0;
+				console.log('swipe!!');
+			}
+		}
 
 		x = acc.x;
 		y = acc.y;
 		z = acc.z;
+		// self.handleAcceleration(acc);
 	}
 
 	this.handleAcceleration = function (acc) {
@@ -182,6 +192,11 @@ function MultiTool () {
 		$('body').removeClass(toolState.pState).addClass(toolState.state);
 		// if (!!navigator.vibrate) navigator.vibrate(75);
 		// self.renderState(newState);
+		if (newState === 'knifeR' || newState === 'knifeL') {
+			$(window).on('devicemotion', self.onDeviceMotion);
+		} else {
+			$(window).off('devicemotion', self.onDeviceMotion);
+		}
 	}
 
 	this.determineState = function (orr) {
