@@ -34,6 +34,12 @@ function Pepper(x, y) {
 	pepperHeight = pepperWidth * 1.21;
 	pepperX = windowWidth-boardWidth*.5;
 	pepperY = windowHeight * .2;
+
+	pepperSliceHeight = pepperHeight;
+	pepeprSliceWidth = pepperSliceHeight * .5;
+
+	chopState.redPepper.choppedW = pepeprSliceWidth;
+	chopState.redPepper.choppedH = pepperSliceHeight;
 }
 
 function Broccoli() {
@@ -41,6 +47,12 @@ function Broccoli() {
 	broccoliHeight = broccoliWidth * 1.09;
 	broccoliX = windowWidth-boardWidth*.75;
 	broccoliY = windowHeight * .2;
+
+	broccoliSliceHeight = broccoliHeight * .5;
+	broccoliSliceWidth = broccoliSliceHeight * .56;
+
+	chopState.broccoli.choppedW = broccoliSliceWidth;
+	chopState.broccoli.choppedH = broccoliSliceHeight;
 }
 
 function Carrot() {
@@ -48,6 +60,12 @@ function Carrot() {
 	carrotHeight = carrotWidth * .65;
 	carrotX = windowWidth-boardWidth*.6;
 	carrotY = windowHeight * .3;
+
+	carrotSliceHeight = carrotHeight * .5;
+	carrotSliceWidth = carrotSliceHeight;
+
+	chopState.carrot.choppedW = carrotSliceWidth;
+	chopState.carrot.choppedH = carrotSliceHeight;
 }
 
 var cucumber, lettuce, mushroom, onion, potato, tomato; 
@@ -61,6 +79,48 @@ var dragYellowPepper = false;
 var dragCucumber = false;
 var dragMushroom = false;
 var dragOnion = false;*/
+
+
+var boardState = {
+	veggieOnBoard : '',
+	redPepper : false,
+	broccoli : false,
+	carrot : false
+};
+
+var choppedVeggies = [];
+
+var chopState = {
+	redPepper : {
+		image : null,
+		chopped : null,
+		choppedW : 0,
+		choppedH : 0,
+		x : 0,
+		y : 0,
+		slices: [] // { xOffset : 88, Offset: 88, r: 29 }
+	},
+	broccoli : {
+		image : null,
+		chopped : null,
+		choppedW : 0,
+		choppedH : 0,
+		x : 0,
+		y : 0,
+		slices: []
+	},
+	carrot : {
+		image : null,
+		chopped : null,
+		choppedW : 0,
+		choppedH : 0,
+		x : 0,
+		y : 0,
+		slices: []
+	}
+};
+var chopCount = 5; // This number determines how many times to slice, this can be done dynamically for each veggie if we want, or could be used to increase difficulty
+
 
 // PRELOAD
 
@@ -81,6 +141,18 @@ function preload(){
 	cucumber = loadImage('/images/cucumber.png');
 	mushroom = loadImage('/images/mushroom.png');
 	onion = loadImage('/images/onion.png');
+
+	chopState.redPepper.image = redPepper;
+	chopState.broccoli.image = broccoli;
+	chopState.carrot.image = carrot;
+
+	redPepperSlice = loadImage('/images/Chopped/pepper-r-ch.png');
+	broccoliSlice = loadImage('/images/Chopped/broccoli-ch.png');
+	carrotSlice = loadImage('/images/Chopped/carrot-ch.png');
+
+	chopState.redPepper.chopped = redPepperSlice;
+	chopState.broccoli.chopped = broccoliSlice;
+	chopState.carrot.chopped = carrotSlice;
 
 	//LOAD SOUNDS
 
@@ -126,15 +198,32 @@ function setup() {
 // DRAW
 
 function draw() {
-	clear();
+	background('#BCC6CC');
 	imageMode(CENTER);
 	image(stove, stoveWidth * .5,  stoveHeight * .45, stoveWidth, stoveHeight);
 	image(pan, panX, panY, panWidth, panHeight);
 	image(board, windowWidth-boardWidth*.5, windowHeight-boardHeight*.55, boardWidth, boardHeight);
 	image(chicken, chickenX, chickenY, chickenWidth,chickenHeight);
-	image(redPepper, pepperX, pepperY, pepperWidth, pepperHeight);
-	image(broccoli, broccoliX, broccoliY, broccoliWidth, broccoliHeight);
-	image(carrot, carrotX, carrotY, carrotWidth, carrotHeight);
+
+	// Rendering Veggies if they still need to be chopped
+	if ( chopState.redPepper.slices.length < chopCount ) image(redPepper, pepperX, pepperY, pepperWidth, pepperHeight);
+	if ( chopState.broccoli.slices.length < chopCount ) image(broccoli, broccoliX, broccoliY, broccoliWidth, broccoliHeight);
+	if ( chopState.carrot.slices.length < chopCount ) image(carrot, carrotX, carrotY, carrotWidth, carrotHeight);
+
+	// Render Slices
+	for (var veg in chopState) {
+		for (var v = 0; v < chopState[veg].slices.length; v++) {
+
+			image(
+				chopState[veg].chopped, // chopped Image
+				chopState[veg].x + chopState[veg].slices[v].xOffset, // X coordinates
+				chopState[veg].y + chopState[veg].slices[v].yOffset, // Y coordinates
+				chopState[veg].choppedW, // chopped Width
+				chopState[veg].choppedH  // chopped Height
+			)
+		}
+	}
+	
 }
 
 
@@ -214,6 +303,12 @@ function mouseDragged(){
 
 //DROPPING FOOD WHEN MOUSE IS RELEASED. FLAG SWITCH TO FALSE.
 function mouseReleased(){
+	var veggieToCheck = dragredPepper ? [pepperX, pepperY, 'redPepper'] :
+						dragBroccoli  ? [broccoliX, broccoliY, 'broccoli'] :
+						dragCarrot    ? [carrotX, carrotY, 'carrot'] : [0,0, ''];
+
+	isVeggieOverBoard(veggieToCheck); 
+	
 	dragredPepper = false;
 	dragBroccoli = false;
 	dragCarrot = false;
@@ -223,6 +318,36 @@ function mouseReleased(){
 	dragMushroom = false;
 	dragOnion = false;*/
 }
+
+
+function keyPressed (e) {
+	if (keyCode == 32) {
+		window.counterTop.socket.emit('space-down');
+	}
+}
+function keyReleased (e) {
+	if (keyCode == 32) {
+		window.counterTop.socket.emit('space-up');
+	}
+}
+
+
+function isVeggieOverBoard (xyV) {
+	var veggieX = xyV[0],
+		veggieY = xyV[1],
+		veggieType = xyV[2]
+
+	if ( veggieX > ( windowWidth - boardWidth ) && veggieY > ( windowHeight - boardHeight ) ) {
+
+		// if (!!boardState.veggieOnBoard) boardState[boardState.veggieOnBoard] = false;
+		boardState.veggieOnBoard = veggieType;
+		boardState[veggieType] = true;
+		chopState[veggieType].x = veggieX;
+		chopState[veggieType].y = veggieY;
+	}
+}
+
+
 
 
 // p5 Code Ends Here
@@ -242,7 +367,48 @@ function CounterTop () {
 	};
 
 	this.handleCookingAction = function (payload) {
-		console.log('COOKING ACTION!!!   ' + payload.action );
+		// console.log('COOKING ACTION!!!   ' + payload.type );
+		if ( payload.type === 'knfieL' || payload.type === 'knifeR') {
+
+			if ( !!boardState.veggieOnBoard && chopState[boardState.veggieOnBoard].slices.length < chopCount) {
+				var range = 75;
+
+				chopState[boardState.veggieOnBoard].slices.push({ 
+					xOffset : random( -range, range), 
+					yOffset : random( -range, range) 
+				});
+
+				if (chopState[boardState.veggieOnBoard].slices.length === chopCount) {
+					boardState[boardState.veggieOnBoard] = false;
+					choppedVeggies.push(boardState.veggieOnBoard);
+					boardState.veggieOnBoard = '';
+
+					// If multiple vegitables on board then reset active veg
+					for (var veg in boardState) {
+						if (!!boardState[veg]) boardState.veggieOnBoard = veg;
+					}
+				}
+			}
+
+
+		} else if ( choppedVeggies.length && payload.type === 'swipe' ) {
+			var vegToSwipe = choppedVeggies.shift();
+			switch(vegToSwipe) {
+				case 'redPepper':
+					chopState.redPepper.x = panX;
+					chopState.redPepper.y = panY  * .7;
+				break;
+				case 'carrot':
+					chopState.carrot.x = panX;
+					chopState.carrot.y = panY * .7;
+				break;
+				case 'broccoli':
+					chopState.broccoli.x = panX;
+					chopState.broccoli.y = panY  * .7;					
+				break;
+			}
+
+		}
 	};
 
 	// initialize IO
