@@ -109,6 +109,8 @@ function Onion () {
 
 
 
+var cucumber, mushroom, onion; 
+
 
 //Flags that determine if mouse is in the radius of a certain food when pressed
 var dragredPepper = false;
@@ -117,8 +119,16 @@ var dragCarrot = false;
 var dragCucumber = false;
 var dragOrangePepper = false;
 var dragYellowPepper = false;
+var dragCucumber = false;
 var dragMushroom = false;
 var dragOnion = false;
+
+//FLAGS THAT DETERMINE IF MOUSE IS IN THE START BUTTON
+var showPinIns = true;
+var showPickIns = false;
+var showKnifeIns = false;
+var showSpoonIns = false;
+var showSaltIns = false;
 
 
 var boardState = {
@@ -260,6 +270,17 @@ function preload(){
 	sizzlingLoud = loadSound('/sounds/sizzling-loud.mp3');
 	sizzlingSoft = loadSound('/sounds/sizzling-soft.mp3');
 	noise = loadSound('/sounds/kitchen-background.mp3');
+	salting = loadSound ('/sounds/salting.mp3');
+
+	//LOAD INSTRUCTIONS
+	findPin = loadImage('/images/Instructions/find-pins.png');
+	knifeIns = loadImage('/images/Instructions/knife-instructions.png');
+	pickVeggie = loadImage('/images/Instructions/pick-veggies.png');
+	saltIns = loadImage('/images/Instructions/salt-instructions.png');
+	spoonIns = loadImage('/images/Instructions/spoon-instructions.png');
+	
+	//LOAD BOTTONS
+	start = loadImage('/images/start.png')
 }
 
 
@@ -303,6 +324,7 @@ function setup() {
 	
 	noise.loop();
 	
+	
 }
 
 
@@ -344,7 +366,28 @@ function draw() {
 			)
 		}
 	}
+
+	//INSTRUCTIONS
+	if (showPinIns == true) {
+		image (findPin, windowWidth * 0.5, windowHeight * 0.5, windowWidth * 0.5, windowWidth * .22);
+	}
+	if (showPickIns == true){
+		image (pickVeggie, windowWidth - boardWidth * 0.7, windowHeight * .25, windowWidth * 0.3, windowWidth * .13); 
+	}
+	if (showKnifeIns == true){
+		image (knifeIns, windowWidth-boardWidth*.5, windowHeight-boardHeight*.55, boardWidth*0.7, boardWidth*0.7);
+	}
+	if (showSpoonIns == true){
+		image (spoonIns, stoveWidth * .52, stoveHeight * .32, boardWidth*0.7, boardWidth*0.78);
+	}
+	if (showSaltIns == true) {
+		image (saltIns, stoveWidth * .52, stoveHeight * .32, boardWidth*0.7, boardWidth*0.76); 
+	}
 	
+	 
+
+	//BUTTONS
+	image (start, windowWidth - boardWidth, windowHeight * .06, boardWidth * 0.27, boardWidth * 0.12);
 }
 
 
@@ -420,6 +463,28 @@ function mouseDragged(){
 
 }
 
+// PREVIOUS INSTRUCTION DISAPEAR AND NEW ONE COMES UP
+function mouseClicked(){
+	if (showPinIns == true) {
+		showPinIns = false;
+		showPickIns = true; 
+	} 
+	else if (showPickIns == true) {
+		showPickIns = false;
+		showKnifeIns = true; 
+	}
+	else if (showKnifeIns == true){
+		showKnifeIns = false;
+		showSpoonIns = true; 
+	}
+	else if (showSpoonIns == true){
+		showSpoonIns = false;
+		showSaltIns = true; 
+	}
+	else if (showSaltIns == true){
+		showSaltIns = false;
+	}
+}
 
 //DROPPING FOOD WHEN MOUSE IS RELEASED. FLAG SWITCH TO FALSE.
 function mouseReleased(){
@@ -439,6 +504,7 @@ function mouseReleased(){
 	dragCucumber = false;
 	dragMushroom = false;
 	dragOnion = false;
+
 }
 
 
@@ -544,6 +610,18 @@ function CounterTop () {
 				case 'broccoli':
 					chopState.broccoli.x = panX;
 					chopState.broccoli.y = panY  * .7;					
+				break;
+				case 'onion':
+					chopState.onion.x = panX;
+					chopState.onion.y = panY  * .7;					
+				break;
+				case 'cucumber':
+					chopState.cucumber.x = panX;
+					chopState.cucumber.y = panY  * .7;					
+				break;
+				case 'mushroom':
+					chopState.mushroom.x = panX;
+					chopState.mushroom.y = panY  * .7;					
 				break;
 			}
 
