@@ -169,6 +169,7 @@ var chopState = {
 		bY : 0,
 		slices: [] // { xOffset : 88, Offset: 88, r: 29 }
 	},
+
 	broccoli : {
 		image : null,
 		chopped : null,
@@ -180,6 +181,7 @@ var chopState = {
 		bY : 0,
 		slices: []
 	},
+
 	carrot : {
 		image : null,
 		chopped : null,
@@ -339,6 +341,7 @@ function setup() {
 	image(onion, onionX, onionY, onionWidth, onionHeight);
 
 	noise.loop();
+	noise.setVolume(.5);
 }
 
 var boardRotation = 0,
@@ -683,12 +686,12 @@ function mute() {
 
  if (!noise.isPlaying()) {
    noise.play();
-   // noise.setVolume(0);
-   muteButton.html("UNMUTE")
- } else {
-   // noise.setVolume(.5);
-   noise.pause();
+   noise.setVolume(.5);
    muteButton.html("MUTE SOUND")
+ } else {
+   noise.setVolume(0);
+   noise.pause();
+   muteButton.html("UNMUTE")
  }
 
 }
@@ -712,6 +715,8 @@ function CounterTop () {
 	this.handleCookingAction = function (payload) {
 		// console.log('COOKING ACTION!!!   ' + payload.type );
 		if ( payload.type === 'knfieL' || payload.type === 'knifeR') {
+			cutting.play();
+			cutting.setVolume(1);
 
 			if ( !!boardState.veggieOnBoard && chopState[boardState.veggieOnBoard].slices.length < chopCount) {
 				var range = 75;
