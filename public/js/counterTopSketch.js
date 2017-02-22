@@ -758,7 +758,7 @@ function CounterTop () {
 		// 				   .attr('href', 'http://localhost:8000/multitool');
 		$('.multitoolPin').text(payload.pin);
 
-		new QRCode(document.getElementById("qrcode"),  "http://10.0.0.122:8000/multitool");
+		new QRCode(document.getElementById("qrcode"),  "http://10.0.0.122:8000/multitool?" + payload.pin);
 	};
 
 	this.handleCookingAction = function (payload) {
@@ -848,9 +848,12 @@ function CounterTop () {
 	this.socket.on('session-started', this.handleSessionStarted);
 	this.socket.on('tool-connected', function(){
 		console.log("TOOL CONNECTED!!!");
+		$('#pinOverlay').fadeOut(100);
 	});
 	this.socket.on('tool-disconnected', function (payload) {
 		console.log("tool disconnected : ", payload.pin);
+		$('#pinOverlay h2').text('Reconnect Your Device!');
+		$('#pinOverlay').fadeIn(100);
 	});
 
 	this.socket.on('cooking-action', self.handleCookingAction);

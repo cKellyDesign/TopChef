@@ -39,6 +39,10 @@ function MultiTool () {
 	this.canvas = null;
 
 	this.preInit = function () {
+		if (!!location.search) {
+			var pinToCheck = location.search.slice(1);
+			self.socket.emit('check-pin', { pin : Number(pinToCheck) });
+		}
 		$('#checkPin').on('click', function (e) {
 			e.preventDefault();
 			var pin = $('#prinfield').val();
