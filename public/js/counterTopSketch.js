@@ -753,7 +753,10 @@ function CounterTop () {
 
 	this.handleSessionStarted = function (payload) {
 		console.log('Session Starting: ', payload.pin);
-		console.log('Pair your device at http://[YOUR.IP.ADRESS]:8000/multitool.html');
+		console.log('Pair your device at http://[YOUR.IP.ADRESS]:8000/multitool');
+		// $('.multitoolLink').text('http://[YOUR.IP.ADRESS]:8000/multitool')
+		// 				   .attr('href', 'http://localhost:8000/multitool');
+		$('.multitoolPin').text(payload.pin);
 		// console.log('CounterTop Server Socket', payload.socket);
 	};
 

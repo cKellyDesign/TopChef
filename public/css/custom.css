@@ -4,7 +4,31 @@ body {
   overflow: hidden;
 }
 
+#pinOverlay {
+	position: fixed;
+	top: 35%; left: 50%;
+	margin-left: -300px;
+	height: 400px;
+	width: 600px;
+	background-color: #fff;
+	text-align: center;
+	z-index: 1000;
+}
 
+#pinOverlay h2 {
+	padding: 12px 0;
+}
+#pinOverlay > div {
+	position: absolute;
+	bottom: 0; 
+	padding: 12px;
+}
+#pinOverlay .linkOption {
+	left: 0; right: 50%;
+}
+#pinOverlay .qrOption {
+	right: 0; left: 50%;
+}
 
 
 
