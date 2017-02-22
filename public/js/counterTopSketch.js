@@ -119,6 +119,13 @@ function Onion () {
 	chopState.onion.choppedH = onionSliceHeight;
 }
 
+function Salt () {
+	saltingWidth = panWidth * .75;
+	saltingHeight = panWidth * 75;
+	saltingX = panX;
+	saltingY = panY * .7;
+}
+
 
 var cucumber, lettuce, mushroom, onion, potato, tomato, cucumber, mushroom, onion; 
 var windowW, windowH;
@@ -141,6 +148,12 @@ var showPickIns = false;
 var showKnifeIns = false;
 var showSpoonIns = false;
 var showSaltIns = false;
+
+// Salt variables
+var isSalting = false,
+	saltingSize, saltImg,
+	saltingIndex = 0,
+	saltingIndexStart = 7;
 
 // Board and Veggie State Variables
 var clutchIsEngaged = false;
@@ -169,6 +182,7 @@ var chopState = {
 		bY : 0,
 		slices: [] // { xOffset : 88, Offset: 88, r: 29 }
 	},
+
 	broccoli : {
 		image : null,
 		chopped : null,
@@ -180,6 +194,7 @@ var chopState = {
 		bY : 0,
 		slices: []
 	},
+
 	carrot : {
 		image : null,
 		chopped : null,
@@ -243,6 +258,8 @@ function preload(){
 	stove = loadImage('/images/stove.png');
 	chicken = loadImage('/images/chicken.png');
 
+	saltImg = loadImage('/images/salt-particles.png');
+
 	//LOAD FOOD 
 	redPepper = loadImage('/images/pepper-r.png');
 	orangePepper = loadImage('/images/pepper-o.png');
@@ -300,7 +317,6 @@ function preload(){
 
 }
 
-
 // SETUP
 
 function setup() {
@@ -316,6 +332,8 @@ function setup() {
 	Cucumber();
 	Mushroom();
 	Onion();
+
+	Salt();
 
 	//LOAD BUTTONS
 	muteButton = createButton ("MUTE SOUND");
@@ -346,7 +364,11 @@ function setup() {
 	image(mushroom, mushroomX, mushroomY, mushroomWidth, mushroomHeight);
 	image(onion, onionX, onionY, onionWidth, onionHeight);
 
+
+	saltingSize = panWidth * .67;
+	
 	noise.loop();
+	noise.setVolume(.5);
 }
 
 var boardRotation = 0,
@@ -368,6 +390,8 @@ function animateBoardToPan () {
 	boardAnimX = boardAnimXinc * boardAnimIndex;
 	boardAnimY = boardAnimYinc * boardAnimIndex;
 }
+
+
 
 // DRAW
 
@@ -492,8 +516,8 @@ function draw() {
 			push();
 			if (boardState[veg] || choppedVeggies.indexOf(veg) !== -1) {
 				translate(chopState[veg].bX, chopState[veg].bY);
-				rotate(chopState[veg].slices[v].rotation);
 			}
+			rotate(chopState[veg].slices[v].rotation);
 			image(
 				chopState[veg].chopped, // chopped Image
 				chopState[veg].slices[v].xOffset, // X coordinates
@@ -507,7 +531,31 @@ function draw() {
 		pop();
 	}
 
+<<<<<<< HEAD
 	
+=======
+	// Render Salting
+	if (isSalting) {
+		push();
+		tint(255, ( (saltingIndex / saltingIndexStart) * 255) );
+		translate(panX, (panY * .7))
+		rotate(random(360));
+		var newSaltSize = saltingSize + (saltingIndex) * 10;
+		image(saltImg, 0, 0, newSaltSize, newSaltSize);
+
+		pop();
+		saltingIndex--;
+		if (saltingIndex === 0) isSalting = false;
+	}
+	// clear()
+	// image(saltImg, panX, (panY * .7), saltingSize, saltingSize);
+	// image(saltImg, saltingX, saltingY, saltingWidth, saltingHeight);
+
+
+	//BUTTONS
+	image (start, windowWidth - boardWidth, windowHeight * .06, boardWidth * 0.27, boardWidth * 0.12);
+
+>>>>>>> master
 	//INSTRUCTIONS
 	if (showPinIns == true) {
 		image (findPin, windowWidth * 0.5, windowHeight * 0.5, windowWidth * 0.5, windowWidth * .22);
@@ -671,6 +719,12 @@ function keyPressed (e) {
 		case 83: // "s"
 			window.counterTop.handleCookingAction({ type: 'swipe' });
 		break;
+		case 68: // "d"
+			window.counterTop.handleCookingAction({ type: 'spoon' });
+		break;
+		case  65: // "a"
+			window.counterTop.handleCookingAction({ type: 'shaker' });
+		break;
 	}
 }
 
@@ -704,12 +758,12 @@ function mute() {
 
  if (!noise.isPlaying()) {
    noise.play();
-   // noise.setVolume(0);
-   muteButton.html("UNMUTE")
- } else {
-   // noise.setVolume(.5);
-   noise.pause();
+   noise.setVolume(.5);
    muteButton.html("MUTE SOUND")
+ } else {
+   noise.setVolume(0);
+   noise.pause();
+   muteButton.html("UNMUTE")
  }
 
 }
@@ -732,7 +786,10 @@ function CounterTop () {
 
 	this.handleCookingAction = function (payload) {
 		// console.log('COOKING ACTION!!!   ' + payload.type );
+
 		if ( payload.type === 'knfieL' || payload.type === 'knifeR') {
+			cutting.play();
+			cutting.setVolume(1);
 
 			if ( !!boardState.veggieOnBoard && chopState[boardState.veggieOnBoard].slices.length < chopCount) {
 				var range = 75;
@@ -786,6 +843,19 @@ function CounterTop () {
 			}
 			fryingVeggies.push(vegToSwipe);
 
+		} else if ( fryingVeggies.length && payload.type === 'spoon' ) {
+			for (var i = 0; i < fryingVeggies.length; i++) {
+				for (var v = 0; v < chopState[fryingVeggies[i]].slices.length; v++) {
+					chopState[fryingVeggies[i]].slices[v] = { 
+						xOffset : random(-(panWidth * .25), (panWidth * .25)), 
+						yOffset : random(-(panWidth * .25), (panWidth * .25)),
+						rotation: random(360)
+					};					
+				}
+			}
+		} else if ( fryingVeggies.length && payload.type === 'shaker') {
+			isSalting = true;
+			saltingIndex = saltingIndexStart;
 		}
 	};
 
