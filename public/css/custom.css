@@ -1,7 +1,9 @@
 body {
-  background: #E3E3E3;
-  height: 100vh;
-  overflow: hidden;
+	background: #E3E3E3;
+	height: 100vh;
+}
+body.counterTop {
+	overflow: hidden;
 }
 
 #pinOverlay {
