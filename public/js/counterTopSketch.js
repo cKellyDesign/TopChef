@@ -191,7 +191,13 @@ function preload(){
 	spoonIns = loadImage('/images/Instructions/spoon-instructions.png');
 	
 	//LOAD BOTTONS
-	start = loadImage('/images/start.png')
+	start = loadImage('/images/start.png');
+	retry = loadImage('/images/retry.png');
+
+	//END SCREEN
+	succeed = loadImage('/images/succeeded.png');
+	fail = loadImage('/images/fail.png');
+
 }
 
 
@@ -344,9 +350,7 @@ function draw() {
 		pop();
 	}
 
-	//BUTTONS
-	image (start, windowWidth - boardWidth, windowHeight * .06, boardWidth * 0.27, boardWidth * 0.12);
-
+	
 	//INSTRUCTIONS
 	if (showPinIns == true) {
 		image (findPin, windowWidth * 0.5, windowHeight * 0.5, windowWidth * 0.5, windowWidth * .22);
@@ -361,9 +365,25 @@ function draw() {
 		image (spoonIns, stoveWidth * .52, stoveHeight * .32, boardWidth*0.7, boardWidth*0.78);
 	}
 	if (showSaltIns == true) {
-		image (saltIns, stoveWidth * .52, stoveHeight * .32, boardWidth*0.7, boardWidth*0.76); 
+		image (saltIns, stoveWidth * .52, stoveHeight * .32, boardWidth*0.7, boardWidth*0.72); 
 	}
 	 
+	//Succeed ending page: shows when 5 shake is done within time limit
+	/*if () {
+		image (succeed, windowWidth*0.5, windowHeight*0.5, windowWidth, windowWidth*.72);
+	};
+	//fail ending page: shows when time runs out
+	if () {
+		image (fail, windowWidth*0.5, windowHeight*0.5, windowWidth, windowWidth*.72);
+	};
+
+
+	//BUTTONS
+	image (start, windowWidth - boardWidth, windowHeight * .06, boardWidth * 0.27, boardWidth * 0.12);
+	//Showing the retry button when game is over
+	if () {
+	image (retry, windowWidth*.5, windowHeight-boardHeight*.4, boardWidth/5, boardWidth/5);
+	};*/
 
 }
 
@@ -386,12 +406,7 @@ function mousePressed(){
 	if (dist(mouseX, mouseY, carrotX, carrotY) < carrotWidth * .5){
 		dragCarrot = true;
 	}
-	/*if (dist(mouseX, mouseY, yellowPepperX, yellowPepperY) < yellowPepperWidth * .5){
-		dragYellowPepper = true;
-	}
-	if (dist(mouseX, mouseY, orangePepperX, orangePepperY) < orangePepperWidth * .5){
-		dragOrangePepper = true;
-	}
+	/*
 	if (dist(mouseX, mouseY, mushroomX, mushroomY) < mushroomWidth * .5){
 		dragMushroom = true; 
 	}
@@ -429,15 +444,7 @@ function mouseDragged(){
 	if(dragCucumber == true){
 		cucumberX = mouseX;
 		cucumberY = mouseY;
-	}
-	if(dragYellowPepper == true){
-		yellowPepperX = mouseX;
-		yellowPepperY = mouseY;
-	}
-	if(dragOrangePepper == true){
-		orangePepperX = mouseX;
-		orangePepperY = mouseY;
-	}*/
+	*/
 
 }
 
