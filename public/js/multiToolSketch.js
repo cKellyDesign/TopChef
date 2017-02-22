@@ -39,6 +39,10 @@ function MultiTool () {
 	this.canvas = null;
 
 	this.preInit = function () {
+		if (!!location.search) {
+			var pinToCheck = location.search.slice(1);
+			self.socket.emit('check-pin', { pin : Number(pinToCheck) });
+		}
 		$('#checkPin').on('click', function (e) {
 			e.preventDefault();
 			var pin = $('#prinfield').val();
@@ -285,7 +289,11 @@ function MultiTool () {
 	});
 	
 	this.socket.on('counter-disconnected', function () {
-		location.reload();
+		if (!!location.search) {
+			location.href = location.href.substring(0, location.href.indexOf("?"));
+		} else {
+			location.reload();			
+		}
 	});
 
 	this.socket.on('space-down', function spaceDown () {

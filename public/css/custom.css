@@ -1,11 +1,56 @@
 body {
-  background: #E3E3E3;
-  height: 100vh;
-  overflow: hidden;
+	background: #E3E3E3;
+	height: 100vh;
+}
+body.counterTop {
+	overflow: hidden;
 }
 
+#pinOverlay {
+	position: fixed;
+	top: 35%; left: 50%;
+	margin-left: -300px;
+	height: 400px;
+	width: 600px;
+	background-color: #fff;
+	text-align: center;
+	z-index: 1000;
+}
 
+#pinOverlay h2 {
+	padding: 12px 0;
+	margin: 12px 0 0;
+}
+#pinOverlay > div {
+	position: absolute;
+	bottom: 0; 
+	padding: 12px;
+}
+#pinOverlay .linkOption {
+	left: 0; right: 50%;
+}
+#pinOverlay .qrOption {
+	right: 0; left: 50%;
+	padding-bottom: 30px;
+}
+#pinOverlay p {
+	margin: 1.25rem 0;
+}
 
+.multitoolLink {
+	font-size: 18px;
+	font-weight: bold;
+	color: #222;
+}
+.multitoolLink:visited {
+	color: #222;
+}
+
+.multitoolPin {
+	font-size: 60px;
+	font-weight: bold;
+	line-height: 1;
+}
 
 
 /* MultiTool */
