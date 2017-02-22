@@ -92,11 +92,11 @@ io.sockets.on('connection', function (socket) {
 
 	socket.on('space-down', function() {
 		var chef = _.findWhere(counterTops, { id: this.id });
-		chef.multiToolSocket.emit('space-down');
+		if (chef && chef.multiToolSocket) chef.multiToolSocket.emit('space-down');
 	});
 	socket.on('space-up', function() {
 		var chef = _.findWhere(counterTops, { id: this.id });
-		chef.multiToolSocket.emit('space-up');
+		if (chef && chef.multiToolSocket) chef.multiToolSocket.emit('space-up');
 	});
 
 	// Listen for new MultiTool

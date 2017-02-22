@@ -38,6 +38,8 @@ function Pepper(x, y) {
 	pepperSliceHeight = pepperHeight;
 	pepperSliceWidth = pepperSliceHeight * .5;
 
+	chopState.redPepper.h = pepperHeight;
+	chopState.redPepper.w = pepperWidth;
 	chopState.redPepper.choppedW = pepperSliceWidth;
 	chopState.redPepper.choppedH = pepperSliceHeight;
 }
@@ -51,6 +53,8 @@ function Broccoli() {
 	broccoliSliceHeight = broccoliHeight * .5;
 	broccoliSliceWidth = broccoliSliceHeight * .56;
 
+	chopState.broccoli.h = broccoliHeight;
+	chopState.broccoli.w = broccoliWidth;
 	chopState.broccoli.choppedW = broccoliSliceWidth;
 	chopState.broccoli.choppedH = broccoliSliceHeight;
 }
@@ -64,6 +68,8 @@ function Carrot() {
 	carrotSliceHeight = carrotHeight * .5;
 	carrotSliceWidth = carrotSliceHeight;
 
+	chopState.carrot.h = carrotHeight;
+	chopState.carrot.w = carrotWidth;
 	chopState.carrot.choppedW = carrotSliceWidth;
 	chopState.carrot.choppedH = carrotSliceHeight;
 }
@@ -77,6 +83,8 @@ function Cucumber () {
 	cucumberSliceHeight = cucumberHeight * .5;
 	cucumberSliceWidth = cucumberSliceHeight;
 
+	chopState.cucumber.h = cucumberHeight;
+	chopState.cucumber.w = cucumberWidth;
 	chopState.cucumber.choppedW = cucumberSliceWidth;
 	chopState.cucumber.choppedH = cucumberSliceHeight;
 }
@@ -90,6 +98,8 @@ function Mushroom () {
 	mushroomSliceHeight = mushroomHeight * .5;
 	mushroomSliceWidth = mushroomSliceHeight;
 
+	chopState.mushroom.h = mushroomHeight;
+	chopState.mushroom.w = mushroomWidth;
 	chopState.mushroom.choppedW = mushroomSliceWidth;
 	chopState.mushroom.choppedH = mushroomSliceHeight;
 }
@@ -103,13 +113,15 @@ function Onion () {
 	onionSliceHeight = onionHeight * .5;
 	onionSliceWidth = onionSliceHeight;
 
+	chopState.onion.h = onionHeight;
+	chopState.onion.w = onionWidth;
 	chopState.onion.choppedW = onionSliceWidth;
 	chopState.onion.choppedH = onionSliceHeight;
 }
 
 
-
-var cucumber, mushroom, onion; 
+var cucumber, lettuce, mushroom, onion, potato, tomato, cucumber, mushroom, onion; 
+var windowW, windowH;
 
 
 //Flags that determine if mouse is in the radius of a certain food when pressed
@@ -130,7 +142,8 @@ var showKnifeIns = false;
 var showSpoonIns = false;
 var showSaltIns = false;
 
-
+// Board and Veggie State Variables
+var clutchIsEngaged = false;
 var boardState = {
 	veggieOnBoard : '',
 	redPepper : false,
@@ -142,6 +155,7 @@ var boardState = {
 };
 
 var choppedVeggies = [];
+var fryingVeggies = [];
 
 var chopState = {
 	redPepper : {
@@ -151,6 +165,8 @@ var chopState = {
 		choppedH : 0,
 		x : 0,
 		y : 0,
+		bX : 0,
+		bY : 0,
 		slices: [] // { xOffset : 88, Offset: 88, r: 29 }
 	},
 	broccoli : {
@@ -160,6 +176,8 @@ var chopState = {
 		choppedH : 0,
 		x : 0,
 		y : 0,
+		bX : 0,
+		bY : 0,
 		slices: []
 	},
 	carrot : {
@@ -169,6 +187,8 @@ var chopState = {
 		choppedH : 0,
 		x : 0,
 		y : 0,
+		bX : 0,
+		bY : 0,
 		slices: []
 	},
 
@@ -179,6 +199,8 @@ var chopState = {
 		choppedH : 0,
 		x : 0,
 		y : 0,
+		bX : 0,
+		bY : 0,
 		slices: []
 	},
 
@@ -189,9 +211,10 @@ var chopState = {
 		choppedH : 0,
 		x : 0,
 		y : 0,
+		bX : 0,
+		bY : 0,
 		slices: []
 	},
-
 
 	onion : {
 		image : null, 
@@ -200,11 +223,10 @@ var chopState = {
 		choppedH : 0,
 		x : 0,
 		y : 0,
+		bX : 0,
+		bY : 0,
 		slices: []
 	}
-
-
-
 	
 };
 
@@ -238,10 +260,6 @@ function preload(){
 	chopState.mushroom.image = mushroom;
 	chopState.onion.image = onion;
 
-
-	
-
-
 	redPepperSlice = loadImage('/images/Chopped/pepper-r-ch.png');
 	broccoliSlice = loadImage('/images/Chopped/broccoli-ch.png');
 	carrotSlice = loadImage('/images/Chopped/carrot-ch.png');
@@ -249,18 +267,12 @@ function preload(){
 	mushroomSlice = loadImage('/images/Chopped/mushroom-ch.png');
 	onionSlice = loadImage('/images/Chopped/onion-ch.png');
 
-	
-
 	chopState.redPepper.chopped = redPepperSlice;
 	chopState.broccoli.chopped = broccoliSlice;
 	chopState.carrot.chopped = carrotSlice;
 	chopState.cucumber.chopped = cucumberSlice;
 	chopState.mushroom.chopped = mushroomSlice;
 	chopState.onion.chopped = onionSlice;
-
-
-
-	
 
 
 	//LOAD SOUNDS
@@ -287,8 +299,6 @@ function preload(){
 // SETUP
 
 function setup() {
-	createCanvas(windowWidth, windowHeight);
-
 	background('#BCC6CC');
 
 	Board();
@@ -303,9 +313,17 @@ function setup() {
 	Onion();
 
 	//LOAD BUTTONS
-  	muteButton = createButton ("MUTE SOUND");
-  	muteButton.mousePressed(mute);
+	muteButton = createButton ("MUTE SOUND");
+	muteButton.mousePressed(mute);
 
+	//Board Positioning Variables
+	createCanvas(windowWidth, windowHeight);
+	boardAnchorX = windowWidth * .5;
+	boardAnchorY = windowHeight - boardHeight * .55;
+	boardDestY = panY + (panHeight * .1);
+	boardDestX = panX + (panWidth * .5);
+	boardAnimXinc = (boardAnchorX - boardDestX) / 15;
+	boardAnimYinc = (boardAnchorY - boardDestY) / 15;
 
 	//SET GAME BACKGROUND
 	imageMode(CENTER);
@@ -320,52 +338,166 @@ function setup() {
 	image(mushroom, mushroomX, mushroomY, mushroomWidth, mushroomHeight);
 	image(onion, onionX, onionY, onionWidth, onionHeight);
 
-
-	
 	noise.loop();
-	
-	
 }
 
+var boardRotation = 0,
+		boardAnchorX, boardAnchorY,
+		boardDestX, boardDestY,
+		boardAnimX = 0, boardAnimY = 0,
+		boardAnimXinc, boardAnimYinc,
+		boardAnimIndex = 0;
+
+function animateBoardToPan () {
+	if (clutchIsEngaged && boardRotation < 0.15) {
+		boardAnimIndex++;
+		boardRotation += 0.01;
+	} else if (!clutchIsEngaged && boardRotation > 0) {
+		boardAnimIndex--;
+		boardRotation -= 0.01;
+	}
+
+	boardAnimX = boardAnimXinc * boardAnimIndex;
+	boardAnimY = boardAnimYinc * boardAnimIndex;
+}
 
 // DRAW
 
 function draw() {
+	background('#BCC6CC');
 
 	//DRAW MUTE BUTTON
- 	 muteButton.position(windowWidth*.75, windowHeight * .02);
+	muteButton.position(windowWidth*.75, windowHeight * .02);
 
-	background('#BCC6CC');
 	imageMode(CENTER);
 	image(stove, stoveWidth * .5,  stoveHeight * .45, stoveWidth, stoveHeight);
 	image(pan, panX, panY, panWidth, panHeight);
-	image(board, windowWidth-boardWidth*.5, windowHeight-boardHeight*.55, boardWidth, boardHeight);
 	image(chicken, chickenX, chickenY, chickenWidth,chickenHeight);
 
+	//Render Board
+	push();
+	if (clutchIsEngaged || boardRotation) animateBoardToPan();
+	translate(boardAnchorX - boardAnimX, boardAnchorY - boardAnimY);
+	rotate(PI * boardRotation);
+	image(board, boardWidth * .5, 0, boardWidth, boardHeight);
+	pop();
+	
+
 	// Rendering Veggies if they still need to be chopped
-	if ( chopState.redPepper.slices.length < chopCount ) image(redPepper, pepperX, pepperY, pepperWidth, pepperHeight);
-	if ( chopState.broccoli.slices.length < chopCount ) image(broccoli, broccoliX, broccoliY, broccoliWidth, broccoliHeight);
-	if ( chopState.carrot.slices.length < chopCount ) image(carrot, carrotX, carrotY, carrotWidth, carrotHeight);
-	if ( chopState.cucumber.slices.length < chopCount ) image(cucumber, cucumberX, cucumberY, cucumberWidth, cucumberHeight);
-	if ( chopState.mushroom.slices.length < chopCount ) image(mushroom, mushroomX, mushroomY, mushroomWidth, mushroomHeight);
-	if ( chopState.onion.slices.length < chopCount ) image(onion, onionX, onionY, onionWidth, onionHeight);
+	if ( chopState.onion.slices.length < chopCount ) {
+		if (boardState.onion){
+			push();
+			translate(boardAnchorX - boardAnimX, boardAnchorY - boardAnimY);
+			rotate(PI * boardRotation);
+		}
+		image(onion, 
+					(boardState.onion ? chopState.onion.bX : onionX), 
+					(boardState.onion ? chopState.onion.bY : onionY),
+					onionWidth, onionHeight);
+		if (boardState.onion) pop();
+	}
 
+	if ( chopState.mushroom.slices.length < chopCount ) {
+		if (boardState.mushroom){
+			push();
+			translate(boardAnchorX - boardAnimX, boardAnchorY - boardAnimY);
+			rotate(PI * boardRotation);
+		}
+		image(mushroom, 
+					(boardState.mushroom ? chopState.mushroom.bX : mushroomX), 
+					(boardState.mushroom ? chopState.mushroom.bY : mushroomY),
+					mushroomWidth, mushroomHeight);
+		if (boardState.mushroom) pop();
+	}
 
+	if ( chopState.cucumber.slices.length < chopCount ) {
+		if (boardState.cucumber){
+			push();
+			translate(boardAnchorX - boardAnimX, boardAnchorY - boardAnimY);
+			rotate(PI * boardRotation);
+		}
+		image(cucumber, 
+					(boardState.cucumber ? chopState.cucumber.bX : cucumberX), 
+					(boardState.cucumber ? chopState.cucumber.bY : cucumberY), 
+					cucumberWidth, cucumberHeight);
+		if (boardState.cucumber) pop();
+	}
+
+	if ( chopState.redPepper.slices.length < chopCount ) {
+		if (boardState.redPepper){
+			push();
+			translate(boardAnchorX - boardAnimX, boardAnchorY - boardAnimY);
+			rotate(PI * boardRotation);
+		}
+		image(redPepper, 
+					(boardState.redPepper ? chopState.redPepper.bX : pepperX), 
+					(boardState.redPepper ? chopState.redPepper.bY : pepperY), 
+					pepperWidth, pepperHeight);
+		if (boardState.redPepper) pop();
+	}
+
+	if ( chopState.broccoli.slices.length < chopCount ) {
+		if (boardState.broccoli){
+			push();
+			translate(boardAnchorX - boardAnimX, boardAnchorY - boardAnimY);
+			rotate(PI * boardRotation);
+		}
+		image(broccoli, 
+					(boardState.broccoli ? chopState.broccoli.bX : broccoliX), 
+					(boardState.broccoli ? chopState.broccoli.bY : broccoliY), 
+					broccoliWidth, broccoliHeight);
+		if (boardState.broccoli) pop();
+	}
+
+	if ( chopState.carrot.slices.length < chopCount ) {
+		if (boardState.carrot){
+			push();
+			translate(boardAnchorX - boardAnimX, boardAnchorY - boardAnimY);
+			rotate(PI * boardRotation);
+		} 
+		image(carrot, 
+					(boardState.carrot ? chopState.carrot.bX : carrotX), 
+					(boardState.carrot ? chopState.carrot.bY : carrotY), 
+					carrotWidth, carrotHeight);
+		if (boardState.carrot) pop();
+	}
 
 
 	// Render Slices
+	
 	for (var veg in chopState) {
-		for (var v = 0; v < chopState[veg].slices.length; v++) {
+		push();
 
+		// Determine Translation point (board anchor or pan)
+		if (boardState[veg] || choppedVeggies.indexOf(veg) !== -1) {
+			translate(boardAnchorX - boardAnimX, boardAnchorY - boardAnimY);
+			rotate(PI * boardRotation);
+		} else {
+			translate(panX, panY - (panHeight * .175));
+		}
+
+		// Render all Slices
+		for (var v = 0; v < chopState[veg].slices.length; v++) {
+			push();
+			if (boardState[veg] || choppedVeggies.indexOf(veg) !== -1) {
+				translate(chopState[veg].bX, chopState[veg].bY);
+				rotate(chopState[veg].slices[v].rotation);
+			}
 			image(
 				chopState[veg].chopped, // chopped Image
-				chopState[veg].x + chopState[veg].slices[v].xOffset, // X coordinates
-				chopState[veg].y + chopState[veg].slices[v].yOffset, // Y coordinates
+				chopState[veg].slices[v].xOffset, // X coordinates
+				chopState[veg].slices[v].yOffset, // Y coordinates
 				chopState[veg].choppedW, // chopped Width
 				chopState[veg].choppedH  // chopped Height
 			)
+			pop();
 		}
+
+		pop();
 	}
+
+	//BUTTONS
+	image (start, windowWidth - boardWidth, windowHeight * .06, boardWidth * 0.27, boardWidth * 0.12);
 
 	//INSTRUCTIONS
 	if (showPinIns == true) {
@@ -383,17 +515,15 @@ function draw() {
 	if (showSaltIns == true) {
 		image (saltIns, stoveWidth * .52, stoveHeight * .32, boardWidth*0.7, boardWidth*0.76); 
 	}
-	
 	 
 
-	//BUTTONS
-	image (start, windowWidth - boardWidth, windowHeight * .06, boardWidth * 0.27, boardWidth * 0.12);
 }
 
 
 //RESIZE WINDOW WILL RESET ANIMATION
 function windowResized() {
   resizeCanvas(windowWidth, windowHeight);
+  // todo: update all other vars
 }
 
 
@@ -428,7 +558,6 @@ function mousePressed(){
 	*/
 
 }
-
 
 //DRAGGING FOOD EVENT 
 function mouseDragged(){
@@ -509,13 +638,25 @@ function mouseReleased(){
 
 
 function keyPressed (e) {
-	if (keyCode == 32) {
-		window.counterTop.socket.emit('space-down');
+
+	switch (keyCode) {
+		case 32: // "space"
+			window.counterTop.socket.emit('space-down');
+			clutchIsEngaged = true;
+		break;
+		case 67: // "c"
+			window.counterTop.handleCookingAction({ type: 'knifeR' });
+		break;
+		case 83: // "s"
+			window.counterTop.handleCookingAction({ type: 'swipe' });
+		break;
 	}
 }
+
 function keyReleased (e) {
 	if (keyCode == 32) {
 		window.counterTop.socket.emit('space-up');
+		clutchIsEngaged = false;
 	}
 }
 
@@ -532,6 +673,8 @@ function isVeggieOverBoard (xyV) {
 		boardState[veggieType] = true;
 		chopState[veggieType].x = veggieX;
 		chopState[veggieType].y = veggieY;
+		chopState[veggieType].bX = veggieX - boardAnchorX;
+		chopState[veggieType].bY = veggieY - boardAnchorY;
 	}
 }
 
@@ -548,12 +691,7 @@ function mute() {
    muteButton.html("MUTE SOUND")
  }
 
-
-
 }
-
-
-
 
 // p5 Code Ends Here
 
@@ -579,8 +717,9 @@ function CounterTop () {
 				var range = 75;
 
 				chopState[boardState.veggieOnBoard].slices.push({ 
-					xOffset : random( -range, range), 
-					yOffset : random( -range, range) 
+					xOffset : (random( -50, 50) / 100) * (chopState[boardState.veggieOnBoard].w || 5), 
+					yOffset : (random( -50, 50) / 100) * (chopState[boardState.veggieOnBoard].h || 5),
+					rotation: random(360)
 				});
 
 				if (chopState[boardState.veggieOnBoard].slices.length === chopCount) {
@@ -624,6 +763,7 @@ function CounterTop () {
 					chopState.mushroom.y = panY  * .7;					
 				break;
 			}
+			fryingVeggies.push(vegToSwipe);
 
 		}
 	};
