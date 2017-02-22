@@ -144,10 +144,13 @@ var dragOnion = false;
 
 //FLAGS for instructions
 var showPinIns = true;
+//FLAGS THAT DETERMINE IF MOUSE IS IN THE START BUTTON
 var showPickIns = false;
 var showKnifeIns = false;
 var showSpoonIns = false;
 var showSaltIns = false;
+
+var roundReadyToStart = false;
 
 // Salt variables
 var isSalting = false,
@@ -549,9 +552,6 @@ function draw() {
 	// image(saltImg, saltingX, saltingY, saltingWidth, saltingHeight);
 
 	//INSTRUCTIONS
-	if (showPinIns == true) {
-		image (findPin, windowWidth * 0.5, windowHeight * 0.5, windowWidth * 0.5, windowWidth * .22);
-	}
 	if (showPickIns == true){
 		image (pickVeggie, windowWidth - boardWidth * 0.7, windowHeight * .25, windowWidth * 0.3, windowWidth * .13); 
 	}
@@ -592,6 +592,8 @@ function windowResized() {
 
 //MOUSE PRESS FOR DRAGGING. IF MOUSE IS WITHIN THE CIRCLE WITH A RADIUS OF 0.5 WIDTH OF THE FOOD, THE FLAG WILL BE TRUE 
 function mousePressed(){
+	if (!roundReadyToStart) return; // block dragging of veggies if game is not ready!
+
 	if (dist(mouseX, mouseY, pepperX, pepperY) < pepperWidth * .5){
 		dragredPepper = true; 
 	}
@@ -649,11 +651,7 @@ function mouseDragged(){
 
 // PREVIOUS INSTRUCTION DISAPEAR AND NEW ONE COMES UP
 function mouseClicked(){
-	if (showPinIns == true) {
-		showPinIns = false;
-		showPickIns = true; 
-	} 
-	else if (showPickIns == true) {
+	if (showPickIns == true) {
 		showPickIns = false;
 		showKnifeIns = true; 
 	}
@@ -667,6 +665,7 @@ function mouseClicked(){
 	}
 	else if (showSaltIns == true){
 		showSaltIns = false;
+		roundReadyToStart = true; // todo: move this to the start button click when timer is ready
 	}
 
 	//retry/reload the content when retry button is pressed
@@ -772,8 +771,12 @@ function CounterTop () {
 
 	this.handleSessionStarted = function (payload) {
 		console.log('Session Starting: ', payload.pin);
-		console.log('Pair your device at http://[YOUR.IP.ADRESS]:8000/multitool.html');
-		// console.log('CounterTop Server Socket', payload.socket);
+		console.log('Pair your device at http://[YOUR.IP.ADRESS]:8000/multitool');
+		// $('.multitoolLink').text('http://[YOUR.IP.ADRESS]:8000/multitool')
+		// 				   .attr('href', 'http://localhost:8000/multitool');
+		$('.multitoolPin').text(payload.pin);
+
+		new QRCode(document.getElementById("qrcode"), location.origin + "/multitool?" + payload.pin);
 	};
 
 	this.handleCookingAction = function (payload) {
@@ -863,9 +866,13 @@ function CounterTop () {
 	this.socket.on('session-started', this.handleSessionStarted);
 	this.socket.on('tool-connected', function(){
 		console.log("TOOL CONNECTED!!!");
+		$('#pinOverlay').fadeOut(100);
+		showPickIns = true;
 	});
 	this.socket.on('tool-disconnected', function (payload) {
 		console.log("tool disconnected : ", payload.pin);
+		$('#pinOverlay h2').text('Reconnect Your Device!');
+		$('#pinOverlay').fadeIn(100);
 	});
 
 	this.socket.on('cooking-action', self.handleCookingAction);
