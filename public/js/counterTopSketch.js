@@ -531,9 +531,6 @@ function draw() {
 		pop();
 	}
 
-<<<<<<< HEAD
-	
-=======
 	// Render Salting
 	if (isSalting) {
 		push();
@@ -551,11 +548,6 @@ function draw() {
 	// image(saltImg, panX, (panY * .7), saltingSize, saltingSize);
 	// image(saltImg, saltingX, saltingY, saltingWidth, saltingHeight);
 
-
-	//BUTTONS
-	image (start, windowWidth - boardWidth, windowHeight * .06, boardWidth * 0.27, boardWidth * 0.12);
-
->>>>>>> master
 	//INSTRUCTIONS
 	if (showPinIns == true) {
 		image (findPin, windowWidth * 0.5, windowHeight * 0.5, windowWidth * 0.5, windowWidth * .22);
@@ -677,10 +669,10 @@ function mouseClicked(){
 		showSaltIns = false;
 	}
 
-	//reload the content when retry button is pressed
-	/*if (dist(mouseX, mouseY, windowWidth*.5, windowHeight-boardHeight*.4) <  boardWidth/10){
-		
-	}*/
+	//retry/reload the content when retry button is pressed
+	if (dist(mouseX, mouseY, windowWidth*.5, windowHeight-boardHeight*.4) <  boardWidth/10){
+		location.reload();
+	}
 }
 
 
