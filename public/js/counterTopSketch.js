@@ -119,6 +119,13 @@ function Onion () {
 	chopState.onion.choppedH = onionSliceHeight;
 }
 
+function Salt () {
+	saltingWidth = panWidth * .75;
+	saltingHeight = panWidth * 75;
+	saltingX = panX;
+	saltingY = panY * .7;
+}
+
 
 var cucumber, lettuce, mushroom, onion, potato, tomato, cucumber, mushroom, onion; 
 var windowW, windowH;
@@ -141,6 +148,12 @@ var showPickIns = false;
 var showKnifeIns = false;
 var showSpoonIns = false;
 var showSaltIns = false;
+
+// Salt variables
+var isSalting = false,
+	saltingSize, saltImg,
+	saltingIndex = 0,
+	saltingIndexStart = 7;
 
 // Board and Veggie State Variables
 var clutchIsEngaged = false;
@@ -243,6 +256,8 @@ function preload(){
 	stove = loadImage('/images/stove.png');
 	chicken = loadImage('/images/chicken.png');
 
+	saltImg = loadImage('/images/salt-particles.png');
+
 	//LOAD FOOD 
 	redPepper = loadImage('/images/pepper-r.png');
 	orangePepper = loadImage('/images/pepper-o.png');
@@ -295,7 +310,6 @@ function preload(){
 	start = loadImage('/images/start.png')
 }
 
-
 // SETUP
 
 function setup() {
@@ -311,6 +325,8 @@ function setup() {
 	Cucumber();
 	Mushroom();
 	Onion();
+
+	Salt();
 
 	//LOAD BUTTONS
 	muteButton = createButton ("MUTE SOUND");
@@ -338,7 +354,8 @@ function setup() {
 	image(mushroom, mushroomX, mushroomY, mushroomWidth, mushroomHeight);
 	image(onion, onionX, onionY, onionWidth, onionHeight);
 
-	noise.loop();
+	saltingSize = panWidth * .67;
+	// noise.loop();
 }
 
 var boardRotation = 0,
@@ -360,6 +377,8 @@ function animateBoardToPan () {
 	boardAnimX = boardAnimXinc * boardAnimIndex;
 	boardAnimY = boardAnimYinc * boardAnimIndex;
 }
+
+
 
 // DRAW
 
@@ -495,6 +514,24 @@ function draw() {
 
 		pop();
 	}
+
+	// Render Salting
+	if (isSalting) {
+		push();
+		tint(255, ( (saltingIndex / saltingIndexStart) * 255) );
+		translate(panX, (panY * .7))
+		rotate(random(360));
+		var newSaltSize = saltingSize + (saltingIndex) * 10;
+		image(saltImg, 0, 0, newSaltSize, newSaltSize);
+
+		pop();
+		saltingIndex--;
+		if (saltingIndex === 0) isSalting = false;
+	}
+	// clear()
+	// image(saltImg, panX, (panY * .7), saltingSize, saltingSize);
+	// image(saltImg, saltingX, saltingY, saltingWidth, saltingHeight);
+
 
 	//BUTTONS
 	image (start, windowWidth - boardWidth, windowHeight * .06, boardWidth * 0.27, boardWidth * 0.12);
@@ -653,6 +690,9 @@ function keyPressed (e) {
 		case 68: // "d"
 			window.counterTop.handleCookingAction({ type: 'spoon' });
 		break;
+		case  65: // "a"
+			window.counterTop.handleCookingAction({ type: 'shaker' });
+		break;
 	}
 }
 
@@ -779,6 +819,9 @@ function CounterTop () {
 					};					
 				}
 			}
+		} else if ( fryingVeggies.length && payload.type === 'shaker') {
+			isSalting = true;
+			saltingIndex = saltingIndexStart;
 		}
 	};
 
