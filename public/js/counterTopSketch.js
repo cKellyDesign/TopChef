@@ -481,8 +481,8 @@ function draw() {
 			push();
 			if (boardState[veg] || choppedVeggies.indexOf(veg) !== -1) {
 				translate(chopState[veg].bX, chopState[veg].bY);
-				rotate(chopState[veg].slices[v].rotation);
 			}
+			rotate(chopState[veg].slices[v].rotation);
 			image(
 				chopState[veg].chopped, // chopped Image
 				chopState[veg].slices[v].xOffset, // X coordinates
@@ -650,6 +650,9 @@ function keyPressed (e) {
 		case 83: // "s"
 			window.counterTop.handleCookingAction({ type: 'swipe' });
 		break;
+		case 68: // "d"
+			window.counterTop.handleCookingAction({ type: 'spoon' });
+		break;
 	}
 }
 
@@ -711,6 +714,7 @@ function CounterTop () {
 
 	this.handleCookingAction = function (payload) {
 		// console.log('COOKING ACTION!!!   ' + payload.type );
+
 		if ( payload.type === 'knfieL' || payload.type === 'knifeR') {
 
 			if ( !!boardState.veggieOnBoard && chopState[boardState.veggieOnBoard].slices.length < chopCount) {
@@ -765,6 +769,16 @@ function CounterTop () {
 			}
 			fryingVeggies.push(vegToSwipe);
 
+		} else if ( fryingVeggies.length && payload.type === 'spoon' ) {
+			for (var i = 0; i < fryingVeggies.length; i++) {
+				for (var v = 0; v < chopState[fryingVeggies[i]].slices.length; v++) {
+					chopState[fryingVeggies[i]].slices[v] = { 
+						xOffset : random(-(panWidth * .25), (panWidth * .25)), 
+						yOffset : random(-(panWidth * .25), (panWidth * .25)),
+						rotation: random(360)
+					};					
+				}
+			}
 		}
 	};
 
