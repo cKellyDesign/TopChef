@@ -757,7 +757,8 @@ function CounterTop () {
 		// $('.multitoolLink').text('http://[YOUR.IP.ADRESS]:8000/multitool')
 		// 				   .attr('href', 'http://localhost:8000/multitool');
 		$('.multitoolPin').text(payload.pin);
-		// console.log('CounterTop Server Socket', payload.socket);
+
+		new QRCode(document.getElementById("qrcode"),  "http://10.0.0.122:8000/multitool");
 	};
 
 	this.handleCookingAction = function (payload) {

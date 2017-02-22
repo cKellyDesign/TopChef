@@ -23,8 +23,12 @@
     <a class="multitoolLink" target="_blank" href="https://goo.gl/fSnBNs">https://goo.gl/fSnBNs</a>
     <p>and enter the pin below.</p>
     <span class="multitoolPin"></span>
+    <p>~~~ or ~~~</p>
+    <p>Use the QR Code to pair your device automatically!</p>
   </div>
-  <div class="qrOption"></div>
+  <div class="qrOption">
+    <div id="qrcode"></div>
+  </div>
 </div>
 
 <!-- Dependencies -->
@@ -36,7 +40,8 @@
 <script src="/js/socket.io-1.4.5.js"></script>
 <script src="/js/p5.js"></script>
 <script src="/js/p5.sound.js"></script>
-<script src="js/p5.dom.js"></script>
+<script src="/js/p5.dom.js"></script>
+<script src="/js/qrcode.min.js"></script>
 <script src="/js/counterTopSketch.js"></script>
 
 </body>
