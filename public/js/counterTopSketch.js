@@ -295,6 +295,18 @@ function preload(){
 	start = loadImage('/images/start.png')
 }
 
+//TIMER COUNTDOWN WORK IN PROGRESS
+// function countDown(seconds) {
+// 	// var element = document.getElementById(elem);
+// 	if(seconds < 1) {
+// 		clearTimeout(timer);
+// 		createP ('YAY!');
+// 		//code to show win or lose screen 
+// 	}
+// 	seconds--;
+// 	var timer = setTimeout(countDown(seconds,1);
+
+// }
 
 // SETUP
 
@@ -311,6 +323,12 @@ function setup() {
 	Cucumber();
 	Mushroom();
 	Onion();
+
+	//TIMER
+	timer = createP ('30');
+	timer.style("font-size", "40px");
+  	timer.style("font-family", "Open Sans");
+  	timer.style("color", "red");
 
 	//LOAD BUTTONS
 	muteButton = createButton ("MUTE SOUND");
@@ -368,6 +386,9 @@ function draw() {
 
 	//DRAW MUTE BUTTON
 	muteButton.position(windowWidth*.75, windowHeight * .02);
+
+	//DRAW TIMER
+	timer.position(windowWidth*.9, windowHeight * .02);
 
 	imageMode(CENTER);
 	image(stove, stoveWidth * .5,  stoveHeight * .45, stoveWidth, stoveHeight);
