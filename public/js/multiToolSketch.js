@@ -289,7 +289,11 @@ function MultiTool () {
 	});
 	
 	this.socket.on('counter-disconnected', function () {
-		location.reload();
+		if (!!location.search) {
+			location.href = location.href.substring(0, location.href.indexOf("?"));
+		} else {
+			location.reload();			
+		}
 	});
 
 	this.socket.on('space-down', function spaceDown () {
