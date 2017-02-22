@@ -142,6 +142,8 @@ var dragCucumber = false;
 var dragMushroom = false;
 var dragOnion = false;
 
+//FLAGS for instructions
+var showPinIns = true;
 //FLAGS THAT DETERMINE IF MOUSE IS IN THE START BUTTON
 var showPickIns = false;
 var showKnifeIns = false;
@@ -310,7 +312,12 @@ function preload(){
 	spoonIns = loadImage('/images/Instructions/spoon-instructions.png');
 	
 	//LOAD BOTTONS
-	start = loadImage('/images/start.png')
+	retry = loadImage('/images/retry.png');
+
+	//END SCREEN
+	succeed = loadImage('/images/succeeded.png');
+	fail = loadImage('/images/fail.png');
+
 }
 
 // SETUP
@@ -334,6 +341,9 @@ function setup() {
 	//LOAD BUTTONS
 	muteButton = createButton ("MUTE SOUND");
 	muteButton.mousePressed(mute);
+	startButton = createButton ("START");
+	//after button pressed the timer starts
+	//startButton.mousePressed(startTimer);
 
 	//Board Positioning Variables
 	createCanvas(windowWidth, windowHeight);
@@ -393,6 +403,9 @@ function draw() {
 
 	//DRAW MUTE BUTTON
 	muteButton.position(windowWidth*.75, windowHeight * .02);
+
+	//DRAW START BUTTON
+	startButton.position(windowWidth*0.65, windowHeight * .02);
 
 	imageMode(CENTER);
 	image(stove, stoveWidth * .5,  stoveHeight * .45, stoveWidth, stoveHeight);
@@ -538,10 +551,6 @@ function draw() {
 	// image(saltImg, panX, (panY * .7), saltingSize, saltingSize);
 	// image(saltImg, saltingX, saltingY, saltingWidth, saltingHeight);
 
-
-	//BUTTONS
-	image (start, windowWidth - boardWidth, windowHeight * .06, boardWidth * 0.27, boardWidth * 0.12);
-
 	//INSTRUCTIONS
 	if (showPickIns == true){
 		image (pickVeggie, windowWidth - boardWidth * 0.7, windowHeight * .25, windowWidth * 0.3, windowWidth * .13); 
@@ -553,11 +562,25 @@ function draw() {
 		image (spoonIns, stoveWidth * .52, stoveHeight * .32, boardWidth*0.7, boardWidth*0.78);
 	}
 	if (showSaltIns == true) {
-		image (saltIns, stoveWidth * .52, stoveHeight * .32, boardWidth*0.7, boardWidth*0.76); 
+		image (saltIns, stoveWidth * .52, stoveHeight * .32, boardWidth*0.7, boardWidth*0.72); 
 	}
 	 
-
+	//Succeed ending page: shows when 5 shake is done within time limit
+	/*if () {
+		image (succeed, windowWidth*0.5, windowHeight*0.5, windowWidth, windowWidth*.72);
+	};
+	
+	//fail ending page: shows when time runs out
+	if () {
+		image (fail, windowWidth*0.5, windowHeight*0.5, windowWidth, windowWidth*.72);
+	};*/
+	
+	//Showing the retry button when game is over
+	//if () {
+	//image (retry, windowWidth*.5, windowHeight-boardHeight*.4, boardWidth/5, boardWidth/5);
+	//};
 }
+
 
 
 //RESIZE WINDOW WILL RESET ANIMATION
@@ -589,16 +612,6 @@ function mousePressed(){
 	if (dist(mouseX, mouseY, onionX, onionY) < onionWidth * .5){
 		dragOnion = true;
 	}
-	/*if (dist(mouseX, mouseY, yellowPepperX, yellowPepperY) < yellowPepperWidth * .5){
-		dragYellowPepper = true;
-	}
-	if (dist(mouseX, mouseY, orangePepperX, orangePepperY) < orangePepperWidth * .5){
-		dragOrangePepper = true;
-	}
-	
-	
-	*/
-
 }
 
 //DRAGGING FOOD EVENT 
@@ -625,12 +638,14 @@ function mouseDragged(){
 		mushroomX = mouseX;
 		mushroomY = mouseY;
 	}
-
+	if(dragCucumber == true){
+		cucumberX = mouseX;
+		cucumberY = mouseY;
+	}
 	if (dragOnion == true){
 		onionX = mouseX;
 		onionY = mouseY;
 	}
-	
 
 }
 
@@ -652,7 +667,13 @@ function mouseClicked(){
 		showSaltIns = false;
 		roundReadyToStart = true; // todo: move this to the start button click when timer is ready
 	}
+
+	//retry/reload the content when retry button is pressed
+	if (dist(mouseX, mouseY, windowWidth*.5, windowHeight-boardHeight*.4) <  boardWidth/10){
+		location.reload();
+	}
 }
+
 
 //DROPPING FOOD WHEN MOUSE IS RELEASED. FLAG SWITCH TO FALSE.
 function mouseReleased(){
