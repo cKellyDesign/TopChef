@@ -5,6 +5,9 @@ body {
 body.counterTop {
 	overflow: hidden;
 }
+body.counterTop.win {
+	cursor: pointer;
+}
 
 #pinOverlay {
 	position: fixed;
@@ -35,6 +38,29 @@ body.counterTop {
 }
 #pinOverlay p {
 	margin: 1.25rem 0;
+}
+
+#recipeOverlay {
+	position: fixed;
+	background-color: white;
+	top: 0; left: 35%;
+	padding: 18px;
+	display: none;
+}
+
+body.playing #recipeOverlay {
+	display: block;
+}
+#recipeOverlay h3 {
+	font-size: 30px;
+
+}
+#recipeOverlay ul {
+	list-style: none;
+	margin: 0;
+}
+#recipeOverlay li.done {
+	text-decoration: line-through;
 }
 
 .multitoolLink {
