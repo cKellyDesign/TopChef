@@ -5,6 +5,9 @@ body {
 body.counterTop {
 	overflow: hidden;
 }
+body.counterTop.win {
+	cursor: pointer;
+}
 
 #pinOverlay {
 	position: fixed;

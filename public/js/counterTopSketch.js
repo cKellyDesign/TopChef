@@ -829,6 +829,7 @@ var GameState = {
 	userScore : 0,
 
 	initNewGame : function () {
+		$('body').removeClass('win');
 		var vegList = allVeggies.slice(0);
 		var vegCount = 1 + Math.floor(GameState.currentLevel * 1.125);
 		for (var i = 0; i < vegCount; i++) {
@@ -863,6 +864,7 @@ var GameState = {
 			GameState.isComplete = true;
 			GameState.currentLevel++;
 			$('body').removeClass('playing');
+			$('body').addClass('win');
 		}
 	},
 
