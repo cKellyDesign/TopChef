@@ -320,12 +320,12 @@ function preload(){
 
 // SETUP
 
-var seconds = 60; 
+var seconds = 45; 
 var timer; 
 var failScreen = false; 
 var timeInterval;
-//REDUCE TIME
-	
+
+//REDUCE TIME	
 function reduceTime () {
 	if(seconds > 0) {
 		seconds--;
@@ -333,14 +333,16 @@ function reduceTime () {
 	} else {
 		clearInterval(timeInterval);
 		$('body').removeClass('playing');
-		failScreen = true; 
+		failScreen = true;
+		 
 	}
 }
 
 //TIMER COUNTDOWN WORK IN PROGRESS
 function runTimer() {
 	$('body').addClass('playing');
-	timeInterval = setInterval(reduceTime, 1000); 
+	timeInterval = setInterval(reduceTime, 1000);
+	startButton.hide(); 
 }
 
 function setup() {
@@ -372,7 +374,7 @@ function setup() {
 	timer = createP (seconds);
 	timer.style("font-size", "40px");
   	timer.style("font-family", "Open Sans");
-  	timer.style("color", "red");
+  	timer.style("color", "black");
   	timer.addClass("ptimer");
 
 	
@@ -382,6 +384,8 @@ function setup() {
 	muteButton.mousePressed(mute);
 	startButton = createButton ("START");
 	startButton.mousePressed(runTimer);
+	startButton.style("background-color", "teal");
+	startButton.style("color", "white");
 
 	//Board Positioning Variables
 	createCanvas(windowWidth, windowHeight);
@@ -408,6 +412,7 @@ function setup() {
 
 	saltingSize = panWidth * .67;
 	
+	//RUN BACKGROUND NOISE WHEN PAGE LOADS
 	noise.loop();
 	noise.setVolume(.5);
 }
@@ -846,7 +851,7 @@ var GameState = {
 		GameState.saltAmount = Math.floor(GameState.veggiesRequired.length * .75);
 
 		GameState.renderRecipeList();
-		$('.ptimer').html(60);
+		$('.ptimer').html(45);
 	},
 
 	renderRecipeList : function () {
@@ -873,7 +878,8 @@ var GameState = {
 	},
 
 	resetGame : function() {
-		seconds = 60;
+		startButton.show();
+		seconds = 45;
 		choppedVeggies = [];
 		fryingVeggies = [];
 		GameState.veggiesRequired = [];
