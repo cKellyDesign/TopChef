@@ -945,6 +945,8 @@ function CounterTop () {
 
 
 		} else if ( choppedVeggies.length && payload.type === 'swipe' ) {
+			scrape.play();
+			scrape.setVolume(1);
 			var vegToSwipe = choppedVeggies.shift();
 			switch(vegToSwipe) {
 				case 'redPepper':
