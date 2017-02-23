@@ -378,7 +378,7 @@ function setup() {
 	
 
 	//LOAD BUTTONS
-	muteButton = createButton ("MUTE SOUND");
+	muteButton = createButton ("SOUND OFF");
 	muteButton.mousePressed(mute);
 	startButton = createButton ("START");
 	startButton.mousePressed(runTimer);
@@ -808,14 +808,18 @@ function mute() {
  if (!noise.isPlaying()) {
    noise.play();
    noise.setVolume(.5);
-   muteButton.html("MUTE SOUND")
+   muteButton.html("SOUND OFF")
  } else {
    noise.setVolume(0);
    noise.pause();
-   muteButton.html("UNMUTE")
+   muteButton.html("SOUND ON")
  }
 
 }
+
+
+
+
 
 // p5 Code Ends Here
 var allVeggies = ['Cucumber', 'Mushroom', 'Onion', 'Broccoli', 'Carrot', 'Red Pepper'];
@@ -989,6 +993,8 @@ function CounterTop () {
 			}
 
 		} else if ( fryingVeggies.length && payload.type === 'spoon' ) {
+			sizzlingLoud.play();
+			sizzlingLoud.setVolume(1);
 			for (var i = 0; i < fryingVeggies.length; i++) {
 				for (var v = 0; v < chopState[fryingVeggies[i]].slices.length; v++) {
 					chopState[fryingVeggies[i]].slices[v] = { 
@@ -1002,6 +1008,8 @@ function CounterTop () {
 			GameState.renderRecipeList();
 
 		} else if ( fryingVeggies.length && payload.type === 'shaker') {
+			salting.play();
+			salting.setVolume(1);
 			isSalting = true;
 			saltingIndex = saltingIndexStart;
 			GameState.saltAmount--;
