@@ -37,6 +37,27 @@ body.counterTop {
 	margin: 1.25rem 0;
 }
 
+#recipeOverlay {
+	position: fixed; display: none;
+	background-color: white;
+	top: 0; left: 35%;
+	padding: 18px;
+}
+body #recipeOverlay {
+	display: block;
+}
+#recipeOverlay h3 {
+	font-size: 30px;
+
+}
+#recipeOverlay ul {
+	list-style: none;
+	margin: 0;
+}
+#recipeOverlay li.done {
+	text-decoration: line-through;
+}
+
 .multitoolLink {
 	font-size: 18px;
 	font-weight: bold;

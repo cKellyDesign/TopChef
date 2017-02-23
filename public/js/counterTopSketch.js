@@ -127,7 +127,7 @@ function Salt () {
 }
 
 
-var cucumber, lettuce, mushroom, onion, potato, tomato, cucumber, mushroom, onion; 
+var cucumber, mushroom, onion, mushroom, onion, pepper; 
 var windowW, windowH;
 
 
@@ -760,7 +760,47 @@ function mute() {
 }
 
 // p5 Code Ends Here
+var allVeggies = ['Cucumber', 'Mushroom', 'Onion', 'Broccoli', 'Carrot', 'Red Pepper'];
+var GameState = {
+	veggiesRequired: [],
+	veggiesCompleted: [],
+	stirAmount : 0,
+	saltAmount : 0,
+	isComplete : false,
+	currentLevel : 1,
+	userScore : 0,
 
+	initNewGame : function () {
+		var vegList = allVeggies;
+		var vegCount = 1 + Math.floor(GameState.currentLevel * 1.125);
+		for (var i = 0; i < vegCount; i++) {
+			var v = Math.floor(Math.random() * vegList.length);
+			var veg = vegList[v];
+			vegList.splice(v, 1);
+			GameState.veggiesRequired.push(veg);
+		}
+		GameState.stirAmount = Math.floor(GameState.veggiesRequired.length * 2.125);
+		GameState.saltAmount = Math.floor(GameState.veggiesRequired.length * .75);
+
+		GameState.renderRecipeList();
+	},
+
+	renderRecipeList : function () {
+		$('#listEl').empty();
+		for (var ii = 0; ii < GameState.veggiesCompleted.length; ii++) {
+			var vegg = GameState.veggiesCompleted[ii];
+			$('#listEl').append('<li class="' + vegg + ' done">' + vegg + '</li>');
+		}
+		for (var i = 0; i < GameState.veggiesRequired.length; i++) {
+			var veg = GameState.veggiesRequired[i];
+			$('#listEl').append('<li class="' + veg + '">' + veg + '</li>');
+		}
+		$('#listEl').append('<li class="salt' + (GameState.saltAmount ? '' : ' done') + '">Salt' + (GameState.saltAmount ? ' x' + GameState.saltAmount : '') + '</li>');
+		$('#listEl').append('<li class="sitr' + (GameState.stirAmount ? '' : ' done') + '">Stir' + (GameState.stirAmount ? ' x' + GameState.stirAmount : '') + '</li>');
+	
+		if ( !GameState.saltAmount && !GameState.stirAmount & !GameState.veggiesRequired.length ) GameState.isComplete = true;
+	}
+};
 
 
 
@@ -777,6 +817,8 @@ function CounterTop () {
 		$('.multitoolPin').text(payload.pin);
 
 		new QRCode(document.getElementById("qrcode"), location.origin + "/multitool?" + payload.pin);
+
+		GameState.initNewGame();
 	};
 
 	this.handleCookingAction = function (payload) {
@@ -838,6 +880,18 @@ function CounterTop () {
 			}
 			fryingVeggies.push(vegToSwipe);
 
+			// Check and Update Required Veggies
+			for (var i=0; i<GameState.veggiesRequired.length; i++) {
+				var veg = GameState.veggiesRequired[i];
+				if ( veg.type.toLowerCase().replace(' ','') === vegToSwipe.toLowerCase() ) {
+					var vegg = GameState.veggiesRequired.splice(i, 1);
+					GameState.veggiesCompleted.push(vegg);
+
+					GameState.stirAmount++; // adding more veggies means more stirring!
+					GameState.renderRecipeList();
+				}
+			}
+
 		} else if ( fryingVeggies.length && payload.type === 'spoon' ) {
 			for (var i = 0; i < fryingVeggies.length; i++) {
 				for (var v = 0; v < chopState[fryingVeggies[i]].slices.length; v++) {
@@ -848,9 +902,14 @@ function CounterTop () {
 					};					
 				}
 			}
+			GameState.stirAmount--;
+			GameState.renderRecipeList();
+
 		} else if ( fryingVeggies.length && payload.type === 'shaker') {
 			isSalting = true;
 			saltingIndex = saltingIndexStart;
+			GameState.saltAmount--;
+			GameState.renderRecipeList();
 		}
 	};
 
