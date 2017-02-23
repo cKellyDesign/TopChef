@@ -150,7 +150,7 @@ var showKnifeIns = false;
 var showSpoonIns = false;
 var showSaltIns = false;
 
-var roundReadyToStart = true;
+var roundReadyToStart = false;
 
 // Salt variables
 var isSalting = false,
