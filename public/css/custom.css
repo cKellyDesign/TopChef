@@ -38,12 +38,14 @@ body.counterTop {
 }
 
 #recipeOverlay {
-	position: fixed; display: none;
+	position: fixed;
 	background-color: white;
 	top: 0; left: 35%;
 	padding: 18px;
+	display: none;
 }
-body #recipeOverlay {
+
+body.playing #recipeOverlay {
 	display: block;
 }
 #recipeOverlay h3 {

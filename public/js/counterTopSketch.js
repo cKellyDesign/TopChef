@@ -320,31 +320,33 @@ function preload(){
 
 // SETUP
 
-var seconds = 30; 
+var seconds = 60; 
 var timer; 
 var failScreen = false; 
+var timeInterval;
+//REDUCE TIME
+	
+function reduceTime () {
+	if(seconds > 0) {
+		seconds--;
+		$(".ptimer").html(seconds);
+	} else {
+		clearInterval(timeInterval);
+		$('body').removeClass('playing');
+		failScreen = true; 
+	}
+}
+
+//TIMER COUNTDOWN WORK IN PROGRESS
+function runTimer() {
+	$('body').addClass('playing');
+	timeInterval = setInterval(reduceTime, 1000); 
+}
 
 function setup() {
 
 
-	//REDUCE TIME
 	
-	function reduceTime () {
-		if(seconds > 0) {
-			seconds--;
-			$(".ptimer").html(seconds);
-			console.log("second countdown", seconds);
-		} else {
-			clearInterval();
-			failScreen = true; 
-		}
-	}
-
-	//TIMER COUNTDOWN WORK IN PROGRESS
-	function runTimer() {
-		console.log("timer starting");
-		setInterval(reduceTime, 1000); 
-	}
 
 	//END SCREEN
 	succeed = loadImage('/images/succeeded.png');
@@ -606,9 +608,9 @@ function draw() {
 	}
 	 
 	//Succeed ending page: shows when 5 shake is done within time limit
-	// if () {
-	// 	image (succeed, windowWidth*0.5, windowHeight*0.5, windowWidth, windowWidth*.72);
-	// }
+	if (GameState.isComplete) {
+		image (succeed, windowWidth*0.5, windowHeight*0.5, windowWidth, windowWidth*.72);
+	}
 	
 	//fail ending page: shows when time runs out
 	if (failScreen) {
@@ -617,7 +619,7 @@ function draw() {
 	
 	// Showing the retry button when game is over
 	if (failScreen) {
-	image (retry, windowWidth*.5, windowHeight-boardHeight*.4, boardWidth/5, boardWidth/5);
+		image (retry, windowWidth*.5, windowHeight-boardHeight*.4, boardWidth/5, boardWidth/5);
 	}
 
 
@@ -713,7 +715,20 @@ function mouseClicked(){
 
 	//retry/reload the content when retry button is pressed
 	if (dist(mouseX, mouseY, windowWidth*.5, windowHeight-boardHeight*.4) <  boardWidth/10){
-		location.reload();
+		// location.reload();
+		failScreen = false;
+		GameState.resetGame();
+	}
+
+	if ( GameState.isComplete ) {
+		if (GameState.currentLevel <= 5) {
+			GameState.isComplete = false;
+			GameState.resetGame();	
+		} else {
+			alert("Congratulations you are the top chef!! Your score this is " + GameState.userScore + "! Play again and try to beat your score by pressing OK!");
+			location.reload();
+		}
+		
 	}
 }
 
@@ -814,7 +829,7 @@ var GameState = {
 	userScore : 0,
 
 	initNewGame : function () {
-		var vegList = allVeggies;
+		var vegList = allVeggies.slice(0);
 		var vegCount = 1 + Math.floor(GameState.currentLevel * 1.125);
 		for (var i = 0; i < vegCount; i++) {
 			var v = Math.floor(Math.random() * vegList.length);
@@ -826,6 +841,7 @@ var GameState = {
 		GameState.saltAmount = Math.floor(GameState.veggiesRequired.length * .75);
 
 		GameState.renderRecipeList();
+		$('.ptimer').html(60);
 	},
 
 	renderRecipeList : function () {
@@ -841,11 +857,44 @@ var GameState = {
 		$('#listEl').append('<li class="salt' + (GameState.saltAmount ? '' : ' done') + '">Salt' + (GameState.saltAmount ? ' x' + GameState.saltAmount : '') + '</li>');
 		$('#listEl').append('<li class="sitr' + (GameState.stirAmount ? '' : ' done') + '">Stir' + (GameState.stirAmount ? ' x' + GameState.stirAmount : '') + '</li>');
 	
-		if ( !GameState.saltAmount && !GameState.stirAmount & !GameState.veggiesRequired.length ) GameState.isComplete = true;
+		if ( !GameState.saltAmount && !GameState.stirAmount & !GameState.veggiesRequired.length ) {
+			clearInterval(timeInterval);
+			GameState.userScore += seconds;
+			GameState.isComplete = true;
+			GameState.currentLevel++;
+			$('body').removeClass('playing');
+		}
+	},
+
+	resetGame : function() {
+		seconds = 60;
+		choppedVeggies = [];
+		fryingVeggies = [];
+		GameState.veggiesRequired = [];
+		GameState.veggiesCompleted = [];
+
+		for (var veg in chopState) {
+			chopState[veg].x = 0;
+			chopState[veg].y = 0;
+			chopState[veg].bX = 0;
+			chopState[veg].bY = 0;
+			chopState[veg].slices = [];
+		}
+
+		for (var vegg in boardState) {
+			boardState[vegg] = (vegg === 'veggieOnBoard') ? '' : false;
+		}
+
+		Pepper();
+		Broccoli();
+		Carrot();
+		Cucumber();
+		Mushroom();
+		Onion();
+
+		GameState.initNewGame();
 	}
 };
-
-
 
 
 // Main JS for handling events and telling p5 to do things
@@ -926,7 +975,7 @@ function CounterTop () {
 			// Check and Update Required Veggies
 			for (var i=0; i<GameState.veggiesRequired.length; i++) {
 				var veg = GameState.veggiesRequired[i];
-				if ( veg.type.toLowerCase().replace(' ','') === vegToSwipe.toLowerCase() ) {
+				if ( veg.toLowerCase().replace(' ','') === vegToSwipe.toLowerCase() ) {
 					var vegg = GameState.veggiesRequired.splice(i, 1);
 					GameState.veggiesCompleted.push(vegg);
 
