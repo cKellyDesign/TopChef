@@ -314,15 +314,43 @@ function preload(){
 	//LOAD BOTTONS
 	retry = loadImage('/images/retry.png');
 
+
+}
+
+
+// SETUP
+
+var seconds = 30; 
+var timer; 
+var failScreen = false; 
+
+function setup() {
+
+
+	//REDUCE TIME
+	
+	function reduceTime () {
+		if(seconds > 0) {
+			seconds--;
+			$(".ptimer").html(seconds);
+			console.log("second countdown", seconds);
+		} else {
+			clearInterval();
+			failScreen = true; 
+		}
+	}
+
+	//TIMER COUNTDOWN WORK IN PROGRESS
+	function runTimer() {
+		console.log("timer starting");
+		setInterval(reduceTime, 1000); 
+	}
+
 	//END SCREEN
 	succeed = loadImage('/images/succeeded.png');
 	fail = loadImage('/images/fail.png');
 
-}
 
-// SETUP
-
-function setup() {
 	background('#BCC6CC');
 
 	Board();
@@ -335,15 +363,23 @@ function setup() {
 	Cucumber();
 	Mushroom();
 	Onion();
-
 	Salt();
+
+
+	//TIMER
+	timer = createP (seconds);
+	timer.style("font-size", "40px");
+  	timer.style("font-family", "Open Sans");
+  	timer.style("color", "red");
+  	timer.addClass("ptimer");
+
+	
 
 	//LOAD BUTTONS
 	muteButton = createButton ("MUTE SOUND");
 	muteButton.mousePressed(mute);
 	startButton = createButton ("START");
-	//after button pressed the timer starts
-	//startButton.mousePressed(startTimer);
+	startButton.mousePressed(runTimer);
 
 	//Board Positioning Variables
 	createCanvas(windowWidth, windowHeight);
@@ -404,9 +440,13 @@ function draw() {
 	//DRAW MUTE BUTTON
 	muteButton.position(windowWidth*.75, windowHeight * .02);
 
+	//DRAW TIMER
+	timer.position(windowWidth*.9, windowHeight * .02);
+
 	//DRAW START BUTTON
 	startButton.position(windowWidth*0.65, windowHeight * .02);
 
+	//DRAW COUNTERTOP
 	imageMode(CENTER);
 	image(stove, stoveWidth * .5,  stoveHeight * .45, stoveWidth, stoveHeight);
 	image(pan, panX, panY, panWidth, panHeight);
@@ -566,19 +606,22 @@ function draw() {
 	}
 	 
 	//Succeed ending page: shows when 5 shake is done within time limit
-	/*if () {
-		image (succeed, windowWidth*0.5, windowHeight*0.5, windowWidth, windowWidth*.72);
-	};
+	// if () {
+	// 	image (succeed, windowWidth*0.5, windowHeight*0.5, windowWidth, windowWidth*.72);
+	// }
 	
 	//fail ending page: shows when time runs out
-	if () {
+	if (failScreen) {
 		image (fail, windowWidth*0.5, windowHeight*0.5, windowWidth, windowWidth*.72);
-	};*/
+	}
 	
-	//Showing the retry button when game is over
-	//if () {
-	//image (retry, windowWidth*.5, windowHeight-boardHeight*.4, boardWidth/5, boardWidth/5);
-	//};
+	// Showing the retry button when game is over
+	if (failScreen) {
+	image (retry, windowWidth*.5, windowHeight-boardHeight*.4, boardWidth/5, boardWidth/5);
+	}
+
+
+
 }
 
 
