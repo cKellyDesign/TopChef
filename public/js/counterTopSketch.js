@@ -30,7 +30,7 @@ function Chicken() {
 // DECLARE FOOD 
 
 function Pepper(x, y) {
-	pepperWidth = boardWidth * .09;
+	pepperWidth = boardWidth * .08;
 	pepperHeight = pepperWidth * 1.26;
 	pepperX = windowWidth-boardWidth*.5;
 	pepperY = windowHeight * .2;
@@ -60,7 +60,7 @@ function Broccoli() {
 }
 
 function Carrot() {
-	carrotWidth = boardWidth * .25;
+	carrotWidth = boardWidth * .18;
 	carrotHeight = carrotWidth * .72;
 	carrotX = windowWidth-boardWidth*.6;
 	carrotY = windowHeight * .3;
@@ -75,7 +75,7 @@ function Carrot() {
 }
 
 function Cucumber () {
-	cucumberWidth = boardWidth * .25;
+	cucumberWidth = boardWidth * .18;
 	cucumberHeight = cucumberWidth * .63;
 	cucumberX = windowWidth-boardWidth;
 	cucumberY = windowHeight * .3;
@@ -105,7 +105,7 @@ function Mushroom () {
 }
 
 function Onion () {
-	onionWidth = boardWidth * .1;
+	onionWidth = boardWidth * .08;
 	onionHeight = onionWidth * 1.31;
 	onionX = windowWidth-boardWidth*.3;
 	onionY = windowHeight * .3;
@@ -150,7 +150,7 @@ var showKnifeIns = false;
 var showSpoonIns = false;
 var showSaltIns = false;
 
-var roundReadyToStart = false;
+var roundReadyToStart = true;
 
 // Salt variables
 var isSalting = false,
@@ -334,7 +334,12 @@ function reduceTime () {
 		clearInterval(timeInterval);
 		$('body').removeClass('playing');
 		failScreen = true;
-		 
+		muteButton.hide(); 
+		timer.hide(); 	 
+	}
+
+	if (seconds <= 10) {
+		timer.style("color", "#D90429");
 	}
 }
 
@@ -342,7 +347,8 @@ function reduceTime () {
 function runTimer() {
 	$('body').addClass('playing');
 	timeInterval = setInterval(reduceTime, 1000);
-	startButton.hide(); 
+	startButton.hide();
+	 
 }
 
 function setup() {
@@ -382,6 +388,9 @@ function setup() {
 	//LOAD BUTTONS
 	muteButton = createButton ("SOUND OFF");
 	muteButton.mousePressed(mute);
+	muteButton.style("color", "#A5A5A5");
+	muteButton.style("border-color", "#A5A5A5");
+
 	startButton = createButton ("START");
 	startButton.mousePressed(runTimer);
 	startButton.style("background-color", "teal");
@@ -615,6 +624,8 @@ function draw() {
 	//Succeed ending page: shows when 5 shake is done within time limit
 	if (GameState.isComplete) {
 		image (succeed, windowWidth*0.5, windowHeight*0.5, windowWidth, windowWidth*.72);
+		muteButton.hide(); 
+		timer.hide(); 
 	}
 	
 	//fail ending page: shows when time runs out
@@ -879,6 +890,8 @@ var GameState = {
 
 	resetGame : function() {
 		startButton.show();
+		muteButton.show(); 
+		timer.show(); 	
 		seconds = 45;
 		choppedVeggies = [];
 		fryingVeggies = [];
