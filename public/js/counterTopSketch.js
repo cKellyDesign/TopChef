@@ -119,6 +119,13 @@ function Onion () {
 	chopState.onion.choppedH = onionSliceHeight;
 }
 
+function Salt () {
+	saltingWidth = panWidth * .75;
+	saltingHeight = panWidth * 75;
+	saltingX = panX;
+	saltingY = panY * .7;
+}
+
 
 var cucumber, lettuce, mushroom, onion, potato, tomato, cucumber, mushroom, onion; 
 var windowW, windowH;
@@ -135,12 +142,21 @@ var dragCucumber = false;
 var dragMushroom = false;
 var dragOnion = false;
 
-//FLAGS THAT DETERMINE IF MOUSE IS IN THE START BUTTON
+//FLAGS for instructions
 var showPinIns = true;
+//FLAGS THAT DETERMINE IF MOUSE IS IN THE START BUTTON
 var showPickIns = false;
 var showKnifeIns = false;
 var showSpoonIns = false;
 var showSaltIns = false;
+
+var roundReadyToStart = false;
+
+// Salt variables
+var isSalting = false,
+	saltingSize, saltImg,
+	saltingIndex = 0,
+	saltingIndexStart = 7;
 
 // Board and Veggie State Variables
 var clutchIsEngaged = false;
@@ -169,6 +185,7 @@ var chopState = {
 		bY : 0,
 		slices: [] // { xOffset : 88, Offset: 88, r: 29 }
 	},
+
 	broccoli : {
 		image : null,
 		chopped : null,
@@ -180,6 +197,7 @@ var chopState = {
 		bY : 0,
 		slices: []
 	},
+
 	carrot : {
 		image : null,
 		chopped : null,
@@ -243,6 +261,8 @@ function preload(){
 	stove = loadImage('/images/stove.png');
 	chicken = loadImage('/images/chicken.png');
 
+	saltImg = loadImage('/images/salt-particles.png');
+
 	//LOAD FOOD 
 	redPepper = loadImage('/images/pepper-r.png');
 	orangePepper = loadImage('/images/pepper-o.png');
@@ -292,8 +312,8 @@ function preload(){
 	spoonIns = loadImage('/images/Instructions/spoon-instructions.png');
 	
 	//LOAD BOTTONS
-	start = loadImage('/images/start.png')
-}
+	retry = loadImage('/images/retry.png');
+
 
 //TIMER COUNTDOWN WORK IN PROGRESS
 // function countDown(seconds) {
@@ -307,6 +327,13 @@ function preload(){
 // 	var timer = setTimeout(countDown(seconds,1);
 
 // }
+
+	//END SCREEN
+	succeed = loadImage('/images/succeeded.png');
+	fail = loadImage('/images/fail.png');
+
+}
+
 
 // SETUP
 
@@ -323,6 +350,8 @@ function setup() {
 	Cucumber();
 	Mushroom();
 	Onion();
+	Salt();
+
 
 	//TIMER
 	timer = createP ('30');
@@ -330,9 +359,14 @@ function setup() {
   	timer.style("font-family", "Open Sans");
   	timer.style("color", "red");
 
+	
+
 	//LOAD BUTTONS
 	muteButton = createButton ("MUTE SOUND");
 	muteButton.mousePressed(mute);
+	startButton = createButton ("START");
+	//after button pressed the timer starts
+	//startButton.mousePressed(startTimer);
 
 	//Board Positioning Variables
 	createCanvas(windowWidth, windowHeight);
@@ -356,7 +390,11 @@ function setup() {
 	image(mushroom, mushroomX, mushroomY, mushroomWidth, mushroomHeight);
 	image(onion, onionX, onionY, onionWidth, onionHeight);
 
+
+	saltingSize = panWidth * .67;
+	
 	noise.loop();
+	noise.setVolume(.5);
 }
 
 var boardRotation = 0,
@@ -379,6 +417,8 @@ function animateBoardToPan () {
 	boardAnimY = boardAnimYinc * boardAnimIndex;
 }
 
+
+
 // DRAW
 
 function draw() {
@@ -390,6 +430,10 @@ function draw() {
 	//DRAW TIMER
 	timer.position(windowWidth*.9, windowHeight * .02);
 
+	//DRAW START BUTTON
+	startButton.position(windowWidth*0.65, windowHeight * .02);
+
+	//DRAW COUNTERTOP
 	imageMode(CENTER);
 	image(stove, stoveWidth * .5,  stoveHeight * .45, stoveWidth, stoveHeight);
 	image(pan, panX, panY, panWidth, panHeight);
@@ -502,8 +546,8 @@ function draw() {
 			push();
 			if (boardState[veg] || choppedVeggies.indexOf(veg) !== -1) {
 				translate(chopState[veg].bX, chopState[veg].bY);
-				rotate(chopState[veg].slices[v].rotation);
 			}
+			rotate(chopState[veg].slices[v].rotation);
 			image(
 				chopState[veg].chopped, // chopped Image
 				chopState[veg].slices[v].xOffset, // X coordinates
@@ -517,13 +561,24 @@ function draw() {
 		pop();
 	}
 
-	//BUTTONS
-	image (start, windowWidth - boardWidth, windowHeight * .06, boardWidth * 0.27, boardWidth * 0.12);
+	// Render Salting
+	if (isSalting) {
+		push();
+		tint(255, ( (saltingIndex / saltingIndexStart) * 255) );
+		translate(panX, (panY * .7))
+		rotate(random(360));
+		var newSaltSize = saltingSize + (saltingIndex) * 10;
+		image(saltImg, 0, 0, newSaltSize, newSaltSize);
+
+		pop();
+		saltingIndex--;
+		if (saltingIndex === 0) isSalting = false;
+	}
+	// clear()
+	// image(saltImg, panX, (panY * .7), saltingSize, saltingSize);
+	// image(saltImg, saltingX, saltingY, saltingWidth, saltingHeight);
 
 	//INSTRUCTIONS
-	if (showPinIns == true) {
-		image (findPin, windowWidth * 0.5, windowHeight * 0.5, windowWidth * 0.5, windowWidth * .22);
-	}
 	if (showPickIns == true){
 		image (pickVeggie, windowWidth - boardWidth * 0.7, windowHeight * .25, windowWidth * 0.3, windowWidth * .13); 
 	}
@@ -534,11 +589,25 @@ function draw() {
 		image (spoonIns, stoveWidth * .52, stoveHeight * .32, boardWidth*0.7, boardWidth*0.78);
 	}
 	if (showSaltIns == true) {
-		image (saltIns, stoveWidth * .52, stoveHeight * .32, boardWidth*0.7, boardWidth*0.76); 
+		image (saltIns, stoveWidth * .52, stoveHeight * .32, boardWidth*0.7, boardWidth*0.72); 
 	}
 	 
-
+	//Succeed ending page: shows when 5 shake is done within time limit
+	/*if () {
+		image (succeed, windowWidth*0.5, windowHeight*0.5, windowWidth, windowWidth*.72);
+	};
+	
+	//fail ending page: shows when time runs out
+	if () {
+		image (fail, windowWidth*0.5, windowHeight*0.5, windowWidth, windowWidth*.72);
+	};*/
+	
+	//Showing the retry button when game is over
+	//if () {
+	//image (retry, windowWidth*.5, windowHeight-boardHeight*.4, boardWidth/5, boardWidth/5);
+	//};
 }
+
 
 
 //RESIZE WINDOW WILL RESET ANIMATION
@@ -550,6 +619,8 @@ function windowResized() {
 
 //MOUSE PRESS FOR DRAGGING. IF MOUSE IS WITHIN THE CIRCLE WITH A RADIUS OF 0.5 WIDTH OF THE FOOD, THE FLAG WILL BE TRUE 
 function mousePressed(){
+	if (!roundReadyToStart) return; // block dragging of veggies if game is not ready!
+
 	if (dist(mouseX, mouseY, pepperX, pepperY) < pepperWidth * .5){
 		dragredPepper = true; 
 	}
@@ -568,16 +639,6 @@ function mousePressed(){
 	if (dist(mouseX, mouseY, onionX, onionY) < onionWidth * .5){
 		dragOnion = true;
 	}
-	/*if (dist(mouseX, mouseY, yellowPepperX, yellowPepperY) < yellowPepperWidth * .5){
-		dragYellowPepper = true;
-	}
-	if (dist(mouseX, mouseY, orangePepperX, orangePepperY) < orangePepperWidth * .5){
-		dragOrangePepper = true;
-	}
-	
-	
-	*/
-
 }
 
 //DRAGGING FOOD EVENT 
@@ -604,22 +665,20 @@ function mouseDragged(){
 		mushroomX = mouseX;
 		mushroomY = mouseY;
 	}
-
+	if(dragCucumber == true){
+		cucumberX = mouseX;
+		cucumberY = mouseY;
+	}
 	if (dragOnion == true){
 		onionX = mouseX;
 		onionY = mouseY;
 	}
-	
 
 }
 
 // PREVIOUS INSTRUCTION DISAPEAR AND NEW ONE COMES UP
 function mouseClicked(){
-	if (showPinIns == true) {
-		showPinIns = false;
-		showPickIns = true; 
-	} 
-	else if (showPickIns == true) {
+	if (showPickIns == true) {
 		showPickIns = false;
 		showKnifeIns = true; 
 	}
@@ -633,8 +692,15 @@ function mouseClicked(){
 	}
 	else if (showSaltIns == true){
 		showSaltIns = false;
+		roundReadyToStart = true; // todo: move this to the start button click when timer is ready
+	}
+
+	//retry/reload the content when retry button is pressed
+	if (dist(mouseX, mouseY, windowWidth*.5, windowHeight-boardHeight*.4) <  boardWidth/10){
+		location.reload();
 	}
 }
+
 
 //DROPPING FOOD WHEN MOUSE IS RELEASED. FLAG SWITCH TO FALSE.
 function mouseReleased(){
@@ -671,6 +737,12 @@ function keyPressed (e) {
 		case 83: // "s"
 			window.counterTop.handleCookingAction({ type: 'swipe' });
 		break;
+		case 68: // "d"
+			window.counterTop.handleCookingAction({ type: 'spoon' });
+		break;
+		case  65: // "a"
+			window.counterTop.handleCookingAction({ type: 'shaker' });
+		break;
 	}
 }
 
@@ -704,12 +776,12 @@ function mute() {
 
  if (!noise.isPlaying()) {
    noise.play();
-   // noise.setVolume(0);
-   muteButton.html("UNMUTE")
- } else {
-   // noise.setVolume(.5);
-   noise.pause();
+   noise.setVolume(.5);
    muteButton.html("MUTE SOUND")
+ } else {
+   noise.setVolume(0);
+   noise.pause();
+   muteButton.html("UNMUTE")
  }
 
 }
@@ -726,13 +798,20 @@ function CounterTop () {
 
 	this.handleSessionStarted = function (payload) {
 		console.log('Session Starting: ', payload.pin);
-		console.log('Pair your device at http://[YOUR.IP.ADRESS]:8000/multitool.html');
-		// console.log('CounterTop Server Socket', payload.socket);
+		console.log('Pair your device at http://[YOUR.IP.ADRESS]:8000/multitool');
+		// $('.multitoolLink').text('http://[YOUR.IP.ADRESS]:8000/multitool')
+		// 				   .attr('href', 'http://localhost:8000/multitool');
+		$('.multitoolPin').text(payload.pin);
+
+		new QRCode(document.getElementById("qrcode"), location.origin + "/multitool?" + payload.pin);
 	};
 
 	this.handleCookingAction = function (payload) {
 		// console.log('COOKING ACTION!!!   ' + payload.type );
+
 		if ( payload.type === 'knfieL' || payload.type === 'knifeR') {
+			cutting.play();
+			cutting.setVolume(1);
 
 			if ( !!boardState.veggieOnBoard && chopState[boardState.veggieOnBoard].slices.length < chopCount) {
 				var range = 75;
@@ -786,6 +865,19 @@ function CounterTop () {
 			}
 			fryingVeggies.push(vegToSwipe);
 
+		} else if ( fryingVeggies.length && payload.type === 'spoon' ) {
+			for (var i = 0; i < fryingVeggies.length; i++) {
+				for (var v = 0; v < chopState[fryingVeggies[i]].slices.length; v++) {
+					chopState[fryingVeggies[i]].slices[v] = { 
+						xOffset : random(-(panWidth * .25), (panWidth * .25)), 
+						yOffset : random(-(panWidth * .25), (panWidth * .25)),
+						rotation: random(360)
+					};					
+				}
+			}
+		} else if ( fryingVeggies.length && payload.type === 'shaker') {
+			isSalting = true;
+			saltingIndex = saltingIndexStart;
 		}
 	};
 
@@ -801,9 +893,13 @@ function CounterTop () {
 	this.socket.on('session-started', this.handleSessionStarted);
 	this.socket.on('tool-connected', function(){
 		console.log("TOOL CONNECTED!!!");
+		$('#pinOverlay').fadeOut(100);
+		showPickIns = true;
 	});
 	this.socket.on('tool-disconnected', function (payload) {
 		console.log("tool disconnected : ", payload.pin);
+		$('#pinOverlay h2').text('Reconnect Your Device!');
+		$('#pinOverlay').fadeIn(100);
 	});
 
 	this.socket.on('cooking-action', self.handleCookingAction);
