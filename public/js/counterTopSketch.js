@@ -21,7 +21,7 @@ function Pan() {
 
 function Chicken() {
 	chickenHeight = panHeight * .45;
-	chickenWidth = panWidth * .5;
+	chickenWidth = chickenHeight * .93;
 	chickenX = panX;
 	chickenY = panY * .7;
 
@@ -31,12 +31,12 @@ function Chicken() {
 
 function Pepper(x, y) {
 	pepperWidth = boardWidth * .09;
-	pepperHeight = pepperWidth * 1.21;
+	pepperHeight = pepperWidth * 1.26;
 	pepperX = windowWidth-boardWidth*.5;
 	pepperY = windowHeight * .2;
 
 	pepperSliceHeight = pepperHeight;
-	pepperSliceWidth = pepperSliceHeight * .5;
+	pepperSliceWidth = pepperSliceHeight * .52 ;
 
 	chopState.redPepper.h = pepperHeight;
 	chopState.redPepper.w = pepperWidth;
@@ -46,12 +46,12 @@ function Pepper(x, y) {
 
 function Broccoli() {
 	broccoliWidth = boardWidth * .19;
-	broccoliHeight = broccoliWidth * 1.09;
+	broccoliHeight = broccoliWidth * 1.03;
 	broccoliX = windowWidth-boardWidth*.75;
 	broccoliY = windowHeight * .2;
 
 	broccoliSliceHeight = broccoliHeight * .5;
-	broccoliSliceWidth = broccoliSliceHeight * .56;
+	broccoliSliceWidth = broccoliSliceHeight * .55;
 
 	chopState.broccoli.h = broccoliHeight;
 	chopState.broccoli.w = broccoliWidth;
@@ -61,7 +61,7 @@ function Broccoli() {
 
 function Carrot() {
 	carrotWidth = boardWidth * .25;
-	carrotHeight = carrotWidth * .65;
+	carrotHeight = carrotWidth * .72;
 	carrotX = windowWidth-boardWidth*.6;
 	carrotY = windowHeight * .3;
 
@@ -76,7 +76,7 @@ function Carrot() {
 
 function Cucumber () {
 	cucumberWidth = boardWidth * .25;
-	cucumberHeight = cucumberWidth * .42;
+	cucumberHeight = cucumberWidth * .63;
 	cucumberX = windowWidth-boardWidth;
 	cucumberY = windowHeight * .3;
 
@@ -96,7 +96,7 @@ function Mushroom () {
 	mushroomY = windowHeight * .2;
 
 	mushroomSliceHeight = mushroomHeight * .5;
-	mushroomSliceWidth = mushroomSliceHeight;
+	mushroomSliceWidth = mushroomSliceHeight * 1.17;
 
 	chopState.mushroom.h = mushroomHeight;
 	chopState.mushroom.w = mushroomWidth;
@@ -106,12 +106,12 @@ function Mushroom () {
 
 function Onion () {
 	onionWidth = boardWidth * .1;
-	onionHeight = onionWidth * 1.24;
+	onionHeight = onionWidth * 1.31;
 	onionX = windowWidth-boardWidth*.3;
 	onionY = windowHeight * .3;
 
 	onionSliceHeight = onionHeight * .5;
-	onionSliceWidth = onionSliceHeight;
+	onionSliceWidth = onionSliceHeight * 2.04;
 
 	chopState.onion.h = onionHeight;
 	chopState.onion.w = onionWidth;
@@ -127,7 +127,7 @@ function Salt () {
 }
 
 
-var cucumber, lettuce, mushroom, onion, potato, tomato, cucumber, mushroom, onion; 
+var cucumber, mushroom, onion, mushroom, onion, pepper; 
 var windowW, windowH;
 
 
@@ -314,15 +314,45 @@ function preload(){
 	//LOAD BOTTONS
 	retry = loadImage('/images/retry.png');
 
+
+}
+
+
+// SETUP
+
+var seconds = 60; 
+var timer; 
+var failScreen = false; 
+var timeInterval;
+//REDUCE TIME
+	
+function reduceTime () {
+	if(seconds > 0) {
+		seconds--;
+		$(".ptimer").html(seconds);
+	} else {
+		clearInterval(timeInterval);
+		$('body').removeClass('playing');
+		failScreen = true; 
+	}
+}
+
+//TIMER COUNTDOWN WORK IN PROGRESS
+function runTimer() {
+	$('body').addClass('playing');
+	timeInterval = setInterval(reduceTime, 1000); 
+}
+
+function setup() {
+
+
+	
+
 	//END SCREEN
 	succeed = loadImage('/images/succeeded.png');
 	fail = loadImage('/images/fail.png');
 
-}
 
-// SETUP
-
-function setup() {
 	background('#BCC6CC');
 
 	Board();
@@ -335,15 +365,23 @@ function setup() {
 	Cucumber();
 	Mushroom();
 	Onion();
-
 	Salt();
+
+
+	//TIMER
+	timer = createP (seconds);
+	timer.style("font-size", "40px");
+  	timer.style("font-family", "Open Sans");
+  	timer.style("color", "red");
+  	timer.addClass("ptimer");
+
+	
 
 	//LOAD BUTTONS
 	muteButton = createButton ("MUTE SOUND");
 	muteButton.mousePressed(mute);
 	startButton = createButton ("START");
-	//after button pressed the timer starts
-	//startButton.mousePressed(startTimer);
+	startButton.mousePressed(runTimer);
 
 	//Board Positioning Variables
 	createCanvas(windowWidth, windowHeight);
@@ -404,9 +442,13 @@ function draw() {
 	//DRAW MUTE BUTTON
 	muteButton.position(windowWidth*.75, windowHeight * .02);
 
+	//DRAW TIMER
+	timer.position(windowWidth*.9, windowHeight * .02);
+
 	//DRAW START BUTTON
 	startButton.position(windowWidth*0.65, windowHeight * .02);
 
+	//DRAW COUNTERTOP
 	imageMode(CENTER);
 	image(stove, stoveWidth * .5,  stoveHeight * .45, stoveWidth, stoveHeight);
 	image(pan, panX, panY, panWidth, panHeight);
@@ -566,19 +608,22 @@ function draw() {
 	}
 	 
 	//Succeed ending page: shows when 5 shake is done within time limit
-	/*if () {
+	if (GameState.isComplete) {
 		image (succeed, windowWidth*0.5, windowHeight*0.5, windowWidth, windowWidth*.72);
-	};
+	}
 	
 	//fail ending page: shows when time runs out
-	if () {
+	if (failScreen) {
 		image (fail, windowWidth*0.5, windowHeight*0.5, windowWidth, windowWidth*.72);
-	};*/
+	}
 	
-	//Showing the retry button when game is over
-	//if () {
-	//image (retry, windowWidth*.5, windowHeight-boardHeight*.4, boardWidth/5, boardWidth/5);
-	//};
+	// Showing the retry button when game is over
+	if (failScreen) {
+		image (retry, windowWidth*.5, windowHeight-boardHeight*.4, boardWidth/5, boardWidth/5);
+	}
+
+
+
 }
 
 
@@ -670,7 +715,20 @@ function mouseClicked(){
 
 	//retry/reload the content when retry button is pressed
 	if (dist(mouseX, mouseY, windowWidth*.5, windowHeight-boardHeight*.4) <  boardWidth/10){
-		location.reload();
+		// location.reload();
+		failScreen = false;
+		GameState.resetGame();
+	}
+
+	if ( GameState.isComplete ) {
+		if (GameState.currentLevel <= 5) {
+			GameState.isComplete = false;
+			GameState.resetGame();	
+		} else {
+			alert("Congratulations you are the top chef!! Your score this is " + GameState.userScore + "! Play again and try to beat your score by pressing OK!");
+			location.reload();
+		}
+		
 	}
 }
 
@@ -760,9 +818,85 @@ function mute() {
 }
 
 // p5 Code Ends Here
+var allVeggies = ['Cucumber', 'Mushroom', 'Onion', 'Broccoli', 'Carrot', 'Red Pepper'];
+var GameState = {
+	veggiesRequired: [],
+	veggiesCompleted: [],
+	stirAmount : 0,
+	saltAmount : 0,
+	isComplete : false,
+	currentLevel : 1,
+	userScore : 0,
 
+	initNewGame : function () {
+		$('body').removeClass('win');
+		var vegList = allVeggies.slice(0);
+		var vegCount = 1 + Math.floor(GameState.currentLevel * 1.125);
+		for (var i = 0; i < vegCount; i++) {
+			var v = Math.floor(Math.random() * vegList.length);
+			var veg = vegList[v];
+			vegList.splice(v, 1);
+			GameState.veggiesRequired.push(veg);
+		}
+		GameState.stirAmount = Math.floor(GameState.veggiesRequired.length * 2.125);
+		GameState.saltAmount = Math.floor(GameState.veggiesRequired.length * .75);
 
+		GameState.renderRecipeList();
+		$('.ptimer').html(60);
+	},
 
+	renderRecipeList : function () {
+		$('#listEl').empty();
+		for (var ii = 0; ii < GameState.veggiesCompleted.length; ii++) {
+			var vegg = GameState.veggiesCompleted[ii];
+			$('#listEl').append('<li class="' + vegg + ' done">' + vegg + '</li>');
+		}
+		for (var i = 0; i < GameState.veggiesRequired.length; i++) {
+			var veg = GameState.veggiesRequired[i];
+			$('#listEl').append('<li class="' + veg + '">' + veg + '</li>');
+		}
+		$('#listEl').append('<li class="salt' + (GameState.saltAmount ? '' : ' done') + '">Salt' + (GameState.saltAmount ? ' x' + GameState.saltAmount : '') + '</li>');
+		$('#listEl').append('<li class="sitr' + (GameState.stirAmount ? '' : ' done') + '">Stir' + (GameState.stirAmount ? ' x' + GameState.stirAmount : '') + '</li>');
+	
+		if ( !GameState.saltAmount && !GameState.stirAmount & !GameState.veggiesRequired.length ) {
+			clearInterval(timeInterval);
+			GameState.userScore += seconds;
+			GameState.isComplete = true;
+			GameState.currentLevel++;
+			$('body').removeClass('playing');
+			$('body').addClass('win');
+		}
+	},
+
+	resetGame : function() {
+		seconds = 60;
+		choppedVeggies = [];
+		fryingVeggies = [];
+		GameState.veggiesRequired = [];
+		GameState.veggiesCompleted = [];
+
+		for (var veg in chopState) {
+			chopState[veg].x = 0;
+			chopState[veg].y = 0;
+			chopState[veg].bX = 0;
+			chopState[veg].bY = 0;
+			chopState[veg].slices = [];
+		}
+
+		for (var vegg in boardState) {
+			boardState[vegg] = (vegg === 'veggieOnBoard') ? '' : false;
+		}
+
+		Pepper();
+		Broccoli();
+		Carrot();
+		Cucumber();
+		Mushroom();
+		Onion();
+
+		GameState.initNewGame();
+	}
+};
 
 
 // Main JS for handling events and telling p5 to do things
@@ -777,6 +911,8 @@ function CounterTop () {
 		$('.multitoolPin').text(payload.pin);
 
 		new QRCode(document.getElementById("qrcode"), location.origin + "/multitool?" + payload.pin);
+
+		GameState.initNewGame();
 	};
 
 	this.handleCookingAction = function (payload) {
@@ -809,6 +945,8 @@ function CounterTop () {
 
 
 		} else if ( choppedVeggies.length && payload.type === 'swipe' ) {
+			scrape.play();
+			scrape.setVolume(1);
 			var vegToSwipe = choppedVeggies.shift();
 			switch(vegToSwipe) {
 				case 'redPepper':
@@ -838,6 +976,18 @@ function CounterTop () {
 			}
 			fryingVeggies.push(vegToSwipe);
 
+			// Check and Update Required Veggies
+			for (var i=0; i<GameState.veggiesRequired.length; i++) {
+				var veg = GameState.veggiesRequired[i];
+				if ( veg.toLowerCase().replace(' ','') === vegToSwipe.toLowerCase() ) {
+					var vegg = GameState.veggiesRequired.splice(i, 1);
+					GameState.veggiesCompleted.push(vegg);
+
+					GameState.stirAmount++; // adding more veggies means more stirring!
+					GameState.renderRecipeList();
+				}
+			}
+
 		} else if ( fryingVeggies.length && payload.type === 'spoon' ) {
 			for (var i = 0; i < fryingVeggies.length; i++) {
 				for (var v = 0; v < chopState[fryingVeggies[i]].slices.length; v++) {
@@ -848,9 +998,14 @@ function CounterTop () {
 					};					
 				}
 			}
+			GameState.stirAmount--;
+			GameState.renderRecipeList();
+
 		} else if ( fryingVeggies.length && payload.type === 'shaker') {
 			isSalting = true;
 			saltingIndex = saltingIndexStart;
+			GameState.saltAmount--;
+			GameState.renderRecipeList();
 		}
 	};
 
