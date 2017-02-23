@@ -21,7 +21,7 @@ function Pan() {
 
 function Chicken() {
 	chickenHeight = panHeight * .45;
-	chickenWidth = panWidth * .5;
+	chickenWidth = chickenHeight * .93;
 	chickenX = panX;
 	chickenY = panY * .7;
 
@@ -31,12 +31,12 @@ function Chicken() {
 
 function Pepper(x, y) {
 	pepperWidth = boardWidth * .09;
-	pepperHeight = pepperWidth * 1.21;
+	pepperHeight = pepperWidth * 1.26;
 	pepperX = windowWidth-boardWidth*.5;
 	pepperY = windowHeight * .2;
 
 	pepperSliceHeight = pepperHeight;
-	pepperSliceWidth = pepperSliceHeight * .5;
+	pepperSliceWidth = pepperSliceHeight * .52 ;
 
 	chopState.redPepper.h = pepperHeight;
 	chopState.redPepper.w = pepperWidth;
@@ -46,12 +46,12 @@ function Pepper(x, y) {
 
 function Broccoli() {
 	broccoliWidth = boardWidth * .19;
-	broccoliHeight = broccoliWidth * 1.09;
+	broccoliHeight = broccoliWidth * 1.03;
 	broccoliX = windowWidth-boardWidth*.75;
 	broccoliY = windowHeight * .2;
 
 	broccoliSliceHeight = broccoliHeight * .5;
-	broccoliSliceWidth = broccoliSliceHeight * .56;
+	broccoliSliceWidth = broccoliSliceHeight * .55;
 
 	chopState.broccoli.h = broccoliHeight;
 	chopState.broccoli.w = broccoliWidth;
@@ -61,7 +61,7 @@ function Broccoli() {
 
 function Carrot() {
 	carrotWidth = boardWidth * .25;
-	carrotHeight = carrotWidth * .65;
+	carrotHeight = carrotWidth * .72;
 	carrotX = windowWidth-boardWidth*.6;
 	carrotY = windowHeight * .3;
 
@@ -76,7 +76,7 @@ function Carrot() {
 
 function Cucumber () {
 	cucumberWidth = boardWidth * .25;
-	cucumberHeight = cucumberWidth * .42;
+	cucumberHeight = cucumberWidth * .63;
 	cucumberX = windowWidth-boardWidth;
 	cucumberY = windowHeight * .3;
 
@@ -96,7 +96,7 @@ function Mushroom () {
 	mushroomY = windowHeight * .2;
 
 	mushroomSliceHeight = mushroomHeight * .5;
-	mushroomSliceWidth = mushroomSliceHeight;
+	mushroomSliceWidth = mushroomSliceHeight * 1.17;
 
 	chopState.mushroom.h = mushroomHeight;
 	chopState.mushroom.w = mushroomWidth;
@@ -106,12 +106,12 @@ function Mushroom () {
 
 function Onion () {
 	onionWidth = boardWidth * .1;
-	onionHeight = onionWidth * 1.24;
+	onionHeight = onionWidth * 1.31;
 	onionX = windowWidth-boardWidth*.3;
 	onionY = windowHeight * .3;
 
 	onionSliceHeight = onionHeight * .5;
-	onionSliceWidth = onionSliceHeight;
+	onionSliceWidth = onionSliceHeight * 2.04;
 
 	chopState.onion.h = onionHeight;
 	chopState.onion.w = onionWidth;
